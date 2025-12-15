@@ -65,9 +65,9 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 7. DATA ANALYSIS (10 pts):
 - UNCERTAINTY PROPAGATION (IB CHEMISTRY STANDARD):
   * MUST use Absolute Uncertainty (for + / -) and Percentage Uncertainty (for * / /).
-  * Do NOT require Physics quadrature methods.
+  * NOTE: Intermediate steps (like showing the specific conversion of absolute to % before adding) are NOT required. Do NOT deduct for missing intermediate steps if the result is correct.
   * No propagation attempted: -2.0 pts.
-  * Propagation incorrect: -1.0 pt.
+  * Propagation incorrect (wrong formula/logic): -1.0 pt.
 - GRAPHS (Bar or Scatter allowed based on context):
   * Axis labels/Units missing: -1.0 pt.
   * MULTIPLE TRIALS RULE: If >1 trial performed, graph MUST show AVERAGES. (If missing: -2.0 pts).
@@ -109,8 +109,10 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
 
 ### 🧠 SCORING ALGORITHMS (STRICT ENFORCEMENT):
 
-1.  **MATH ENFORCEMENT:**
-    * **Decimal Scores are MANDATORY.** (e.g., 9.5). DO NOT round down.
+1.  **MATH ENFORCEMENT (CRITICAL):**
+    * For **EVERY** section, you MUST calculate the score as: `10.0 - [Sum of Deductions]`.
+    * You **MUST** ensure the score matches the written feedback.
+    * *Example:* If you list deductions of -1.0 and -0.5, the score MUST be 8.5. It cannot be 9.0.
 
 2.  **MATERIALS & UNCERTAINTIES (Section 5):**
     * **Locating Uncertainties:** Look for uncertainties (e.g., ±0.01) in the Materials list **OR** in the headers of Data Tables. If found in tables, credit them for this section.
@@ -121,10 +123,10 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
     * **Precision Check:** Do sig figs match? (e.g., 10.00 ± 0.05 is WRONG, 10.00 ± 0.01 is RIGHT). If NO -> **Deduct 0.5**.
 
 3.  **DATA ANALYSIS (Section 7) - IB CHEM METHODOLOGY:**
-    * **Propagation Check:** The student must use **Absolute Uncertainty** (sum of errors) or **Percentage Uncertainty** (sum of percentages). 
-      * *Example:* For addition/subtraction, they simply add the absolute errors. For multiplication, they add percentage errors.
+    * **Propagation Check:** The student must use **Absolute Uncertainty** (sum of errors) or **Percentage Uncertainty** (sum of percentages).
+      * **CRITICAL - NO INTERMEDIATE STEPS REQUIRED:** Do NOT penalize the student if they do not show the explicit step of converting absolute uncertainty to percentage uncertainty. As long as the calculation/logic is correct, it is fine.
       * **Do NOT expect complex Physics formulas** (like partial derivatives or quadrature).
-      * If missing completely: Deduct 2.0.
+      * If propagation is missing completely: Deduct 2.0.
       * If present but mathematically invalid (even for IB standards): Deduct 1.0.
     * **Graphing Averages:**
       * If **Multiple Trials** were performed: The graph **MUST** be of the **AVERAGE** data.
@@ -148,6 +150,7 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
 ### 📝 FEEDBACK STYLE INSTRUCTIONS:
 1. **CLEAN OUTPUT:** When quoting student text, remove `<sub>` tags.
 2. **AVOID ROBOTIC CHECKLISTS:** Do not use "[Yes/No]". Write 2-3 sentences explaining the score.
+3. **SHOW YOUR MATH:** In your internal logic, explicitly subtract the points.
 
 ### OUTPUT FORMAT:
 Please strictly use the following format.
@@ -189,7 +192,8 @@ STUDENT: [Filename]
 * **✅ Strengths:** [Calculations/Graph]
 * **⚠️ Improvements:** [**IB PROPAGATION & GRAPH CHECK:** 1. "Used IB Chem formulas (Absolute/Percent)? Missing (-2) or Incorrect (-1)."
   2. "Multiple trials were found, but the graph did not show Average values (-2)."
-  3. "Axis labels/units missing (-1)." ]
+  3. "Axis labels/units missing (-1)." 
+  4. "**NOTE:** Do not deduct for missing intermediate steps in uncertainty calculation."]
 
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [Data citation]
@@ -335,8 +339,9 @@ def process_uploaded_files(uploaded_files):
 
 def recalculate_total_score(text):
     try:
-        pattern = r"\d+\.\s+[A-Z\s&]+:\s+([\d\.]+)/10"
-        matches = re.findall(pattern, text)
+        # Improved Regex to catch scores even if formatting is slightly off (case insensitive, flexible spacing)
+        pattern = r"\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10"
+        matches = re.findall(pattern, text, re.IGNORECASE)
         if matches:
             total_score = sum(float(m) for m in matches)
             if total_score.is_integer():
@@ -381,6 +386,7 @@ def grade_submission(file, model_id):
         "2. **DATA ANALYSIS (Section 7):**\n"
         "   - **Uncertainty Propagation:** You MUST use **IB CHEMISTRY STANDARDS**.\n"
         "   - **Formulas:** Look for Absolute Uncertainty (summing errors) and Percentage Uncertainty (summing percentages). Do NOT look for Physics quadrature.\n"
+        "   - **Note:** Do NOT deduct points if the student did not show the intermediate step of converting absolute uncertainties to percentages. As long as the calculation/logic is correct, it is fine.\n"
         "   - **Averages:** If multiple trials were done, the graph MUST be of the AVERAGES. If they graphed raw trials -> Deduct 2 pts.\n"
         "3. **CONCLUSION:**\n"
         "   - **Uncertainty Impact:** If mentioned but NOT discussed fully -> Deduct 1.0 pt. If completely missing -> Deduct 2.0 pts.\n"
