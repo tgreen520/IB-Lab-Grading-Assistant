@@ -116,32 +116,32 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
 
 ### 🧠 SCORING ALGORITHMS (STRICT ENFORCEMENT):
 
-1.  **MATH ENFORCEMENT (CRITICAL):**
-    * For **EVERY** section, the score must be exactly: `10.0 - [Sum of Listed Deductions]`.
-    * **DO NOT** make up hidden deductions. If you only list "-2.0 for Missing Graph", the score **MUST** be 8.0. It cannot be 6.0.
+1.  **HIDDEN MATH (CRITICAL):**
+    * You MUST perform your score calculations inside a special block: `<<<MATH: 10.0 - 0.5 = 9.5>>>`.
+    * This block must appear **immediately before** the section header.
+    * You MUST list every specific deduction in this block to ensure the subtraction is correct.
+    * *Example:* `<<<MATH: Starting 10.0. Deductions: Diagram (-0.5). Calculation: 10.0 - 0.5 = 9.5.>>>`
+    * The system will remove these blocks before showing the user, so be precise inside them.
 
-2.  **SILENT PROCESSING (NO INTERNAL MONOLOGUE):**
-    * **ABSOLUTELY FORBIDDEN:** Do not print "SCORING LOGIC", "CALCULATION", "FINAL SCORE", "Re-reading", or equations like "10 - 2 = 8" in the output text.
-    * Only print the final number in the section header (e.g., "7. DATA ANALYSIS: 8.0/10").
-
-3.  **DATA ANALYSIS (Section 7) - NO DOUBLE JEOPARDY:**
+2.  **DATA ANALYSIS (Section 7) - NO DOUBLE JEOPARDY:**
     * **Scenario A (No Graph):** Deduct 2.0 points. **STOP.** * Do **NOT** deduct for "Missing Averages" (-2.0) if there is no graph.
       * Do **NOT** deduct for "Missing Axis Labels" (-1.0) if there is no graph.
       * **Max Deduction for a missing graph is 2.0.**
     * **Scenario B (Graph Exists):** * Check axis labels (missing? -1.0). 
       * Check if it graphs Averages (if multiple trials). If raw data graphed -> -2.0.
 
-4.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
+3.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
     * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation. If discussed in EITHER -> **0 Deduction**. Only deduct if missing from BOTH.
-    * **Literature Comparison:** Did they compare their data to published literature or accepted values to support/refute their findings? If NO -> **Deduct 1.0 point**.
+    * **Literature Comparison:** Check if they compared data to published literature. If NO -> **Deduct 1.0 point**.
     * **Theory:** Full explanation = 0. Incomplete = -1.0. Missing = -2.0.
     * **Quantitative Data:** Missing = -2.0.
 
-5.  **REFERENCES (Section 10) - LENIENCY:**
-    * Do **NOT** deduct for minor formatting issues.
+4.  **REFERENCES (Section 10) - STRICT LENIENCY:**
+    * **Formatting Errors:** If you see minor formatting errors (dates, italics, punctuation), mention them in "Improvements" but deduct **0.0 points**.
+    * **Score:** If there are 3+ sources, the score MUST be **10.0/10** unless a source is actually missing.
 
 ### OUTPUT FORMAT:
-Please strictly use the following format. Do not add extra headers or logic explanations.
+Please strictly use the following format.
 
 # 📝 SCORE: [Total Points]/100
 STUDENT: [Filename]
@@ -152,36 +152,44 @@ STUDENT: [Filename]
 
 **📝 DETAILED RUBRIC BREAKDOWN:**
 
+<<<MATH: ...>>>
 **1. FORMATTING: [Score]/10**
 * **✅ Strengths:** [Tone/Voice]
 * **⚠️ Improvements:** [List specific errors only. If none, write "None".]
 
+<<<MATH: ...>>>
 **2. INTRODUCTION: [Score]/10**
 * **✅ Strengths:** [Objective/Theory]
 * **⚠️ Improvements:** [Explanation]
 
+<<<MATH: ...>>>
 **3. HYPOTHESIS: [Score]/10**
 * **✅ Strengths:** [Prediction]
 * **⚠️ Improvements:** [Justification]
 
+<<<MATH: ...>>>
 **4. VARIABLES: [Score]/10**
 * **✅ Strengths:** [IV/DV/Controls]
 * **⚠️ Improvements:** [Vagueness]
 
+<<<MATH: ...>>>
 **5. PROCEDURES & MATERIALS: [Score]/10**
 * **✅ Strengths:** [Safety/Steps]
 * **⚠️ Improvements:** [**UNCERTAINTY CHECK:** "Uncertainties found in Materials/Tables? (-0.5 if 1 missing, -1.0 if >1 missing). Precision match? (-0.5)."]
 
+<<<MATH: ...>>>
 **6. RAW DATA: [Score]/10**
 * **✅ Strengths:** [Tables/Units]
 * **⚠️ Improvements:** [Sig Fig check]
 
+<<<MATH: ...>>>
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [Calculations/Graph]
 * **⚠️ Improvements:** [**IB PROPAGATION & GRAPH CHECK:** - "Uncertainty Propagation: Missing (-2) or Incorrect (-1)?"
   - "Graph: Missing (-2)? (If missing, do not deduct for axes/averages)."
   - "Axes/Averages: (Only check if graph exists)."]
 
+<<<MATH: ...>>>
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [Data citation]
 * **⚠️ Improvements:** [**SCORING LOGIC:** - "Literature Comparison: Did you compare to published literature? (Missing = -1)."
@@ -189,10 +197,12 @@ STUDENT: [Filename]
   - "Theory: Missing (-2) or Incomplete (-1)?"
   - "Quant Data: Missing (-2)?"]
 
+<<<MATH: ...>>>
 **9. EVALUATION: [Score]/10**
 * **✅ Strengths:** [Error list]
 * **⚠️ Improvements:** [Impact/Improvement specificity]
 
+<<<MATH: ...>>>
 **10. REFERENCES: [Score]/10**
 * **✅ Strengths:** [Source count]
 * **⚠️ Improvements:** [Formatting (No deduction for minor errors)]
@@ -325,6 +335,11 @@ def process_uploaded_files(uploaded_files):
                 file_counts['ignored'] += 1
     return final_files, file_counts
 
+def clean_hidden_math(text):
+    """Removes the <<<MATH: ... >>> blocks from the AI output."""
+    clean_text = re.sub(r'<<<MATH:.*?>>>', '', text, flags=re.DOTALL)
+    return clean_text.strip()
+
 def recalculate_total_score(text):
     try:
         pattern = r"\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10"
@@ -425,8 +440,14 @@ def grade_submission(file, model_id):
                 messages=[{"role": "user", "content": user_message}]
             )
             raw_text = response.content[0].text
-            corrected_text = recalculate_total_score(raw_text)
-            return corrected_text
+            
+            # 1. Clean the Hidden Math (so user doesn't see it)
+            clean_text = clean_hidden_math(raw_text)
+            
+            # 2. Recalculate Total (Just in case)
+            final_text = recalculate_total_score(clean_text)
+            
+            return final_text
             
         except (anthropic.RateLimitError, anthropic.APIStatusError) as e:
             if isinstance(e, anthropic.APIStatusError) and e.status_code == 529:
