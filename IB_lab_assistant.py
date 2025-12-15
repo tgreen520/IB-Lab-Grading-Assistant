@@ -97,7 +97,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Explained fully: 0 deduction.
   * Discussed but incomplete explanation: -1.0 pt.
   * Completely missing: -2.0 pts.
-- QUANTITATIVE SUPPORT (ANTI-HALLUCINATION CHECK): 
+- QUANTITATIVE SUPPORT: 
   * Must cite collected raw data specific numbers.
   * If only DERIVED data (averages, rates, R^2) is discussed but collected data is missing: -1.0 pt.
   * If NO quantitative data (neither derived nor collected) is cited: -2.0 pts.
@@ -126,10 +126,11 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
 
 ### 🧠 SCORING ALGORITHMS (STRICT ENFORCEMENT):
 
-1.  **MATH ENFORCEMENT:**
-    * For **EVERY** section, calculate the score as: `10.0 - [Sum of Listed Deductions]`.
-    * **SHOW THE DEDUCTION:** Next to every error found, strictly list the point value (e.g., "Missing units -0.5").
-    * Ensure the final score matches the sum of these listed deductions.
+1.  **HIDDEN MATH (CRITICAL):**
+    * You MUST perform your score calculations inside a special block: `<<<MATH: 10.0 - 0.5 = 9.5>>>`.
+    * This block must appear **immediately before** the section header.
+    * You MUST list every specific deduction in this block to ensure the subtraction is correct.
+    * The system will remove these blocks before showing the user, so be precise inside them.
 
 2.  **HYPOTHESIS (Section 3) - SPECIFICITY & UNITS:**
     * **Check for Units:** Did they state the units for the IV and DV? (e.g., "Temperature (°C)"). If missing -> **Deduct 0.5**.
@@ -149,17 +150,16 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
       * **Scenario A (No Graph):** Deduct 2.0 points. **STOP.** Do NOT deduct for missing axes or averages.
       * **Scenario B (Graph Exists):** Check axis labels (missing? -1.0). Check if it graphs Averages (if multiple trials). If raw data graphed -> -2.0.
 
-5.  **CONCLUSION (Section 8) - CROSS-CHECK & ANTI-HALLUCINATION:**
+5.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
     * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation.
       * **Discussion + Specific Impact Explained:** 0 Deduction.
       * **Discussion Present + Impact Missing:** If they mention uncertainty in either section, but fail to explain the specific impact on the data -> **Deduct 1.0**.
       * **No Discussion:** If NO mention of uncertainty in EITHER section -> **Deduct 2.0**.
     * **Literature Comparison:** Check if they compared data to published literature. If NO -> **Deduct 1.0 point**.
-    * **Quantitative Data Support (STRICT CHECK):**
-      * **VERIFY:** Look for ACTUAL digits/numbers in the Conclusion text. Do NOT credit vague statements like "The data increased."
-      * **Scenario A (Raw Data Cited):** If they cite specific RAW/COLLECTED values -> **0 Deduction**.
-      * **Scenario B (Only Derived Data Cited):** If they ONLY cite averages, slopes, or R^2, but NO raw/collected data -> **Deduct 1.0 point**.
-      * **Scenario C (No Data Cited):** If NO specific numbers are cited -> **Deduct 2.0 points**.
+    * **Quantitative Data Support:**
+      * Cited **Collected** Data (raw values) -> 0 Deduction.
+      * Cited **Derived** Data (averages/rates/R^2) ONLY (no raw data) -> **Deduct 1.0 point**.
+      * Cited **NO** Data -> **Deduct 2.0 points**.
 
 6.  **REFERENCES (Section 10) - STRICT LENIENCY:**
     * **Formatting Errors:** If you see minor formatting errors (dates, italics, punctuation), mention them in "Improvements" but deduct **0.0 points**.
@@ -177,47 +177,57 @@ STUDENT: [Filename]
 
 **📝 DETAILED RUBRIC BREAKDOWN:**
 
+<<<MATH: ...>>>
 **1. FORMATTING: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [List specific errors only. If none, write "None".]
 
+<<<MATH: ...>>>
 **2. INTRODUCTION: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [Explanation]
 
+<<<MATH: ...>>>
 **3. HYPOTHESIS: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [**CHECK:** Units for IV/DV included? (-0.5 if no). Measurement method explained & specific? (-1.0 if vague/missing).]
 
+<<<MATH: ...>>>
 **4. VARIABLES: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [Vagueness]
 
+<<<MATH: ...>>>
 **5. PROCEDURES & MATERIALS: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [**UNCERTAINTY CHECK:** "Uncertainties found in Materials? (0 ded). Missing in Materials but in Data? (-0.5 ded). Missing everywhere? (-1.0 ded). Precision match? (-0.5)."]
 
+<<<MATH: ...>>>
 **6. RAW DATA: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [Sig Fig check]
 
+<<<MATH: ...>>>
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [**IB PROPAGATION & GRAPH CHECK:** - "Uncertainty Propagation: Attempted/Incomplete (-1)? Not attempted (-2)?"
   - "Graph: Missing (-2)? (If missing, do not deduct for axes/averages)."
   - "Axes/Averages: (Only check if graph exists)."]
 
+<<<MATH: ...>>>
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [**SCORING LOGIC:** - "Literature Comparison: Did you compare to published literature? (Missing = -1)."
   - "Uncertainty Impact: (Check Conc & Eval). Missing in BOTH = -2, Present but specific impact missing = -1."
   - "Theory: Missing (-2) or Incomplete (-1)?"
-  - "Quant Data: Only derived data (-1)? Missing ALL data (-2)?"]
+  - "Quant Data: Only derived data (-1)? Missing all (-2)?"]
 
+<<<MATH: ...>>>
 **9. EVALUATION: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [Impact/Improvement specificity]
 
+<<<MATH: ...>>>
 **10. REFERENCES: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [Formatting (No deduction for minor errors)]
@@ -350,6 +360,11 @@ def process_uploaded_files(uploaded_files):
                 file_counts['ignored'] += 1
     return final_files, file_counts
 
+def clean_hidden_math(text):
+    """Removes the <<<MATH: ... >>> blocks from the AI output."""
+    clean_text = re.sub(r'<<<MATH:.*?>>>', '', text, flags=re.DOTALL)
+    return clean_text.strip()
+
 def recalculate_total_score(text):
     try:
         pattern = r"\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10"
@@ -451,8 +466,14 @@ def grade_submission(file, model_id):
                 messages=[{"role": "user", "content": user_message}]
             )
             raw_text = response.content[0].text
-            corrected_text = recalculate_total_score(raw_text)
-            return corrected_text
+            
+            # 1. Clean the Hidden Math (so user doesn't see it)
+            clean_text = clean_hidden_math(raw_text)
+            
+            # 2. Recalculate Total (Just in case)
+            final_text = recalculate_total_score(clean_text)
+            
+            return final_text
             
         except (anthropic.RateLimitError, anthropic.APIStatusError) as e:
             if isinstance(e, anthropic.APIStatusError) and e.status_code == 529:
