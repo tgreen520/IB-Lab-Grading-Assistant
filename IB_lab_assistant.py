@@ -39,6 +39,14 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 
 3. HYPOTHESIS (10 pts):
 - Criteria: Specific prediction with scientific justification.
+- REQUIRED DETAILS:
+  * Units for Independent Variable (IV) and Dependent Variable (DV) must be included.
+  * Method of measuring the DV must be explicitly stated.
+  * DV must be specific and measurable (not vague).
+- DEDUCTIONS:
+  * Missing units for IV/DV: -1.0 pt.
+  * Missing explanation of measurement method: -1.0 pt.
+  * DV is vague/not measurable: -1.0 pt.
 
 4. VARIABLES (10 pts):
 - Criteria: IV, DV, 3+ Controls.
@@ -123,20 +131,25 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
     * *Example:* `<<<MATH: Starting 10.0. Deductions: Diagram (-0.5). Calculation: 10.0 - 0.5 = 9.5.>>>`
     * The system will remove these blocks before showing the user, so be precise inside them.
 
-2.  **DATA ANALYSIS (Section 7) - NO DOUBLE JEOPARDY:**
+2.  **HYPOTHESIS (Section 3) - SPECIFICITY:**
+    * **Check for Units:** Did they state the units for IV and DV? (e.g., "Temperature (°C)"). If missing -> **Deduct 1.0**.
+    * **Check Measurement Method:** Did they say *how* they will measure the DV? (e.g., "using a stopwatch"). If missing -> **Deduct 1.0**.
+    * **Check Specificity:** Is the DV specific? (e.g., "Rate of reaction" is vague; "Time for color change in seconds" is specific). If vague -> **Deduct 1.0**.
+
+3.  **DATA ANALYSIS (Section 7) - NO DOUBLE JEOPARDY:**
     * **Scenario A (No Graph):** Deduct 2.0 points. **STOP.** * Do **NOT** deduct for "Missing Averages" (-2.0) if there is no graph.
       * Do **NOT** deduct for "Missing Axis Labels" (-1.0) if there is no graph.
       * **Max Deduction for a missing graph is 2.0.**
     * **Scenario B (Graph Exists):** * Check axis labels (missing? -1.0). 
       * Check if it graphs Averages (if multiple trials). If raw data graphed -> -2.0.
 
-3.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
+4.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
     * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation. If discussed in EITHER -> **0 Deduction**. Only deduct if missing from BOTH.
     * **Literature Comparison:** Check if they compared data to published literature. If NO -> **Deduct 1.0 point**.
     * **Theory:** Full explanation = 0. Incomplete = -1.0. Missing = -2.0.
     * **Quantitative Data:** Missing = -2.0.
 
-4.  **REFERENCES (Section 10) - STRICT LENIENCY:**
+5.  **REFERENCES (Section 10) - STRICT LENIENCY:**
     * **Formatting Errors:** If you see minor formatting errors (dates, italics, punctuation), mention them in "Improvements" but deduct **0.0 points**.
     * **Score:** If there are 3+ sources, the score MUST be **10.0/10** unless a source is actually missing.
 
@@ -165,7 +178,7 @@ STUDENT: [Filename]
 <<<MATH: ...>>>
 **3. HYPOTHESIS: [Score]/10**
 * **✅ Strengths:** [Prediction]
-* **⚠️ Improvements:** [Justification]
+* **⚠️ Improvements:** [**CHECK:** Units included for IV/DV? Measurement method explained? DV specific? Deduct -1.0 for each missing element.]
 
 <<<MATH: ...>>>
 **4. VARIABLES: [Score]/10**
