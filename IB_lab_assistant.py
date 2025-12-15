@@ -74,8 +74,8 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * MUST use Absolute Uncertainty (for + / -) and Percentage Uncertainty (for * / /).
   * NOTE: Intermediate steps are NOT required. Do NOT deduct for missing intermediate steps if the result is correct.
   * **SCORING:**
-    - No propagation attempted at all: -2.0 pts.
-    - Propagation attempted but incorrect (wrong formula/logic): -1.0 pt.
+    - **Attempted (Partial):** Any calculation (e.g., standard deviation, range) OR propagation attempted, even if incomplete/incorrect: -1.0 pt.
+    - **Missing:** No attempt at calculation or propagation: -2.0 pts.
 - GRAPHS (Bar or Scatter allowed based on context):
   * Graph Missing: -2.0 pts. (NOTE: If Graph is missing, do NOT deduct for missing axis labels or missing averages. Max deduction is -2.0).
   * Graph Present but Axis labels/Units missing: -1.0 pt.
@@ -86,10 +86,9 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 8. CONCLUSION (10 pts) [STRICT DEDUCTIONS]:
 - UNCERTAINTY IMPACT (CROSS-CHECK EVALUATION): 
   * Check BOTH Conclusion and Evaluation.
-  * If discussed in EITHER section: 0 deduction.
-  * Mentioned but NOT discussed fully (specific impact on data not explained): -1.0 pt.
-  * Completely missing in BOTH Conclusion AND Evaluation: -2.0 pts.
-  * NOTE: When crediting this, explicitly state: "Uncertainty discussion can be in the conclusion or evaluation section."
+  * **Full Discussion:** Impact on data explained in either section: 0 deduction.
+  * **Partial Discussion:** Uncertainty mentioned (in Conc or Eval), but specific impact on data is NOT explained: -1.0 pt.
+  * **Missing:** No mention of uncertainty in Conclusion OR Evaluation: -2.0 pts.
 - LITERATURE COMPARISON:
   * Must compare results to published literature/accepted values to support or refute findings.
   * If missing: -1.0 pt.
@@ -131,7 +130,6 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
     * You MUST perform your score calculations inside a special block: `<<<MATH: 10.0 - 0.5 = 9.5>>>`.
     * This block must appear **immediately before** the section header.
     * You MUST list every specific deduction in this block to ensure the subtraction is correct.
-    * *Example:* `<<<MATH: Starting 10.0. Deductions: Diagram (-0.5). Calculation: 10.0 - 0.5 = 9.5.>>>`
     * The system will remove these blocks before showing the user, so be precise inside them.
 
 2.  **HYPOTHESIS (Section 3) - SPECIFICITY & UNITS:**
@@ -145,18 +143,18 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
       * YES (In Data, Missing in Materials) -> **Deduct 0.5**.
       * NO (Missing Everywhere) -> **Deduct 1.0**.
 
-4.  **DATA ANALYSIS (Section 7) - NO DOUBLE JEOPARDY:**
-    * **Uncertainty Propagation:** * If **Attempted** (even if wrong/incomplete) -> **Deduct 1.0**.
-      * If **Not Attempted** at all -> **Deduct 2.0**.
+4.  **DATA ANALYSIS (Section 7) - UNCERTAINTY ATTEMPT RULE:**
+    * **Attempted:** If there is ANY uncertainty math (e.g., they listed instrument error, calculated standard deviation, OR tried to propagate), but it is incomplete/incorrect -> **Deduct 1.0**.
+    * **Missing:** Only deduct **2.0** if there is ABSOLUTELY NO uncertainty calculation or propagation found.
     * **Graph Logic:**
       * **Scenario A (No Graph):** Deduct 2.0 points. **STOP.** Do NOT deduct for missing axes or averages.
       * **Scenario B (Graph Exists):** Check axis labels (missing? -1.0). Check if it graphs Averages (if multiple trials). If raw data graphed -> -2.0.
 
 5.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
     * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation.
-      * **Discussion Present + Specific Data Impact Explained:** 0 Deduction.
-      * **Discussion Present + Specific Data Impact Missing:** (General discussion only) -> **Deduct 1.0**.
-      * **No Discussion:** Missing in BOTH sections -> **Deduct 2.0**.
+      * **Discussion + Specific Impact Explained:** 0 Deduction.
+      * **Discussion Present + Impact Missing:** If they mention uncertainty in either section, but fail to explain the specific impact on the data -> **Deduct 1.0**.
+      * **No Discussion:** If NO mention of uncertainty in EITHER section -> **Deduct 2.0**.
     * **Literature Comparison:** Check if they compared data to published literature. If NO -> **Deduct 1.0 point**.
     * **Quantitative Data Support:**
       * Cited **Collected** Data (raw values) -> 0 Deduction.
@@ -212,7 +210,7 @@ STUDENT: [Filename]
 <<<MATH: ...>>>
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
-* **⚠️ Improvements:** [**IB PROPAGATION & GRAPH CHECK:** - "Uncertainty Propagation: Attempted but wrong (-1)? Not attempted (-2)?"
+* **⚠️ Improvements:** [**IB PROPAGATION & GRAPH CHECK:** - "Uncertainty Propagation: Attempted/Incomplete (-1)? Not attempted (-2)?"
   - "Graph: Missing (-2)? (If missing, do not deduct for axes/averages)."
   - "Axes/Averages: (Only check if graph exists)."]
 
@@ -220,7 +218,7 @@ STUDENT: [Filename]
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [**SCORING LOGIC:** - "Literature Comparison: Did you compare to published literature? (Missing = -1)."
-  - "Uncertainty Impact: (Note: Uncertainty discussion can be in the conclusion or evaluation section). Missing in BOTH = -2, Present but specific impact missing = -1."
+  - "Uncertainty Impact: (Check Conc & Eval). Missing in BOTH = -2, Present but specific impact missing = -1."
   - "Theory: Missing (-2) or Incomplete (-1)?"
   - "Quant Data: Only derived data (-1)? Missing all (-2)?"]
 
@@ -414,6 +412,7 @@ def grade_submission(file, model_id):
         "   - If completely MISSING: Deduct 0.5 (if 1 device used) or 1.0 (if >1 devices used).\n"
         "2. **DATA ANALYSIS (Section 7):**\n"
         "   - **Uncertainty Propagation:** You MUST use **IB CHEMISTRY STANDARDS**.\n"
+        "   - **Attempt Rule:** If they made ANY attempt at calculating or propagating uncertainties (even if incorrect), deduct only 1.0 pt. Only deduct 2.0 if completely missing.\n"
         "   - **Formulas:** Look for Absolute Uncertainty (summing errors) and Percentage Uncertainty (summing percentages). Do NOT look for Physics quadrature.\n"
         "   - **Note:** Do NOT deduct points if the student did not show the intermediate step of converting absolute uncertainties to percentages. As long as the calculation/logic is correct, it is fine.\n"
         "   - **Averages:** If multiple trials were done, the graph MUST be of the AVERAGES. If they graphed raw trials -> Deduct 2 pts.\n"
