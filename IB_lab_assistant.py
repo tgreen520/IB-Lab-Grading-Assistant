@@ -57,12 +57,12 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 5. PROCEDURES & MATERIALS (10 pts):
 - Criteria: Numbered steps, quantities, safety, diagram.
 - UNCERTAINTIES & PRECISION:
-  * Uncertainties can be listed here OR in Data Tables.
-  * If Uncertainties are completely missing:
-    - If only 1 measuring device used: -0.5 pts.
-    - If >1 measuring devices used: -1.0 pt.
-  * Uncertainties not reported with correct precision: -0.5 pts.
-  * Instrument precision does not match uncertainty precision: -0.5 pts.
+  * Uncertainties SHOULD be listed in the Materials section.
+  * **SCORING:**
+    - Listed in Materials: 0 Deduction.
+    - Missing in Materials BUT listed in Data Section: -0.5 pts.
+    - Completely missing (not in Materials OR Data): -1.0 pt.
+  * Precision mismatch (uncertainty vs. measurement): -0.5 pts.
   * Diagram missing: -0.5 pt.
 
 6. RAW DATA (10 pts):
@@ -87,7 +87,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 - UNCERTAINTY IMPACT (CROSS-CHECK EVALUATION): 
   * Check BOTH Conclusion and Evaluation.
   * If discussed in EITHER section: 0 deduction.
-  * Mentioned but NOT discussed fully (in either): -1.0 pt (Partial).
+  * Mentioned but NOT discussed fully (specific impact on data not explained): -1.0 pt.
   * Completely missing in BOTH Conclusion AND Evaluation: -2.0 pts.
   * NOTE: When crediting this, explicitly state: "Uncertainty discussion can be in the conclusion or evaluation section."
 - LITERATURE COMPARISON:
@@ -139,22 +139,31 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
     * **Check Measurement Method:** Did they say *how* they will measure the DV? (e.g., "using a stopwatch", "using a colorimeter"). If vague or missing -> **Deduct 1.0**.
     * **Check Specificity:** Is the DV specific? (e.g., "Rate of reaction" is vague; "Time for color change in seconds" is specific). If vague -> **Deduct 1.0**.
 
-3.  **DATA ANALYSIS (Section 7) - NO DOUBLE JEOPARDY:**
+3.  **MATERIALS (Section 5) - UNCERTAINTY LOCATION:**
+    * **Check Materials List:** Are uncertainties listed (e.g., ±0.05)? If YES -> **0 Deduction**.
+    * **Check Data Section:** If missing in Materials, are they in the Data Tables?
+      * YES (In Data, Missing in Materials) -> **Deduct 0.5**.
+      * NO (Missing Everywhere) -> **Deduct 1.0**.
+
+4.  **DATA ANALYSIS (Section 7) - NO DOUBLE JEOPARDY:**
     * **Uncertainty Propagation:** * If **Attempted** (even if wrong/incomplete) -> **Deduct 1.0**.
       * If **Not Attempted** at all -> **Deduct 2.0**.
     * **Graph Logic:**
       * **Scenario A (No Graph):** Deduct 2.0 points. **STOP.** Do NOT deduct for missing axes or averages.
       * **Scenario B (Graph Exists):** Check axis labels (missing? -1.0). Check if it graphs Averages (if multiple trials). If raw data graphed -> -2.0.
 
-4.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
-    * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation. If discussed in EITHER -> **0 Deduction**. Only deduct if missing from BOTH.
+5.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
+    * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation.
+      * **Discussion Present + Specific Data Impact Explained:** 0 Deduction.
+      * **Discussion Present + Specific Data Impact Missing:** (General discussion only) -> **Deduct 1.0**.
+      * **No Discussion:** Missing in BOTH sections -> **Deduct 2.0**.
     * **Literature Comparison:** Check if they compared data to published literature. If NO -> **Deduct 1.0 point**.
     * **Quantitative Data Support:**
       * Cited **Collected** Data (raw values) -> 0 Deduction.
       * Cited **Derived** Data (averages/rates/R^2) ONLY (no raw data) -> **Deduct 1.0 point**.
       * Cited **NO** Data -> **Deduct 2.0 points**.
 
-5.  **REFERENCES (Section 10) - STRICT LENIENCY:**
+6.  **REFERENCES (Section 10) - STRICT LENIENCY:**
     * **Formatting Errors:** If you see minor formatting errors (dates, italics, punctuation), mention them in "Improvements" but deduct **0.0 points**.
     * **Score:** If there are 3+ sources, the score MUST be **10.0/10** unless a source is actually missing.
 
@@ -193,7 +202,7 @@ STUDENT: [Filename]
 <<<MATH: ...>>>
 **5. PROCEDURES & MATERIALS: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
-* **⚠️ Improvements:** [**UNCERTAINTY CHECK:** "Uncertainties found in Materials/Tables? (-0.5 if 1 missing, -1.0 if >1 missing). Precision match? (-0.5)."]
+* **⚠️ Improvements:** [**UNCERTAINTY CHECK:** "Uncertainties found in Materials? (0 ded). Missing in Materials but in Data? (-0.5 ded). Missing everywhere? (-1.0 ded). Precision match? (-0.5)."]
 
 <<<MATH: ...>>>
 **6. RAW DATA: [Score]/10**
@@ -211,7 +220,7 @@ STUDENT: [Filename]
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [**SCORING LOGIC:** - "Literature Comparison: Did you compare to published literature? (Missing = -1)."
-  - "Uncertainty Impact: (Note: Uncertainty discussion can be in the conclusion or evaluation section). Missing in BOTH = -2, Partial = -1."
+  - "Uncertainty Impact: (Note: Uncertainty discussion can be in the conclusion or evaluation section). Missing in BOTH = -2, Present but specific impact missing = -1."
   - "Theory: Missing (-2) or Incomplete (-1)?"
   - "Quant Data: Only derived data (-1)? Missing all (-2)?"]
 
