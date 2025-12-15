@@ -103,6 +103,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 
 10. REFERENCES (10 pts):
 - Criteria: 3+ credible sources = 9.0 min score.
+- FORMATTING: Minor errors (italics, periods, capitalization) = 0 deduction. Only deduct if citation is unintelligible or missing.
 """
 
 # --- 4. SYSTEM PROMPT (UPDATED LOGIC) ---
@@ -116,13 +117,9 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
     * You **MUST** ensure the score matches the written feedback.
     * *Example:* If you list deductions of -1.0 and -0.5, the score MUST be 8.5. It cannot be 9.0.
 
-2.  **MATERIALS & UNCERTAINTIES (Section 5):**
-    * **Locating Uncertainties:** Look for uncertainties (e.g., ±0.01) in the Materials list **OR** in the headers of Data Tables. If found in tables, credit them for this section.
-    * **Deduction Logic if Missing:**
-      * Estimate how many types of measuring devices were used.
-      * If **ONLY 1 type** used & uncertainty missing -> **Deduct 0.5**.
-      * If **>1 types** used & uncertainty missing -> **Deduct 1.0**.
-    * **Precision Check:** Do sig figs match? (e.g., 10.00 ± 0.05 is WRONG, 10.00 ± 0.01 is RIGHT). If NO -> **Deduct 0.5**.
+2.  **NO INTERNAL MONOLOGUE:**
+    * Do NOT output your internal thought process (e.g., "Correction," "Let me check," "Re-reading," "I initially thought...").
+    * Output **ONLY** the final feedback and the final score calculation.
 
 3.  **DATA ANALYSIS (Section 7) - IB CHEM METHODOLOGY:**
     * **Propagation Check:** The student must use **Absolute Uncertainty** (sum of errors) or **Percentage Uncertainty** (sum of percentages).
@@ -142,13 +139,13 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
       * **Completely Missing:** **Deduct 2.0 points**.
     * **Quantitative Data:** Did they quote specific numbers? If NO, **Deduct 2.0 points**.
 
-5.  **EVALUATION (Section 9) - IMPACT & IMPROVEMENT:**
-    * **IMPACT (2 pts):** All errors must have specific directional impact explained.
-    * **IMPROVEMENTS (2 pts):** Must name specific equipment.
+5.  **REFERENCES (Section 10) - LENIENCY:**
+    * Do **NOT** deduct for minor formatting issues (e.g., missing italics, commas).
+    * Only deduct if the source is missing or impossible to find.
 
 ### 📝 FEEDBACK STYLE INSTRUCTIONS:
 1. **CLEAN OUTPUT:** When quoting student text, remove `<sub>` tags.
-2. **AVOID ROBOTIC CHECKLISTS:** Do not use "[Yes/No]". Write 2-3 sentences explaining the score.
+2. **PROFESSIONAL TONE:** Never say "I corrected myself." Just state the fact.
 3. **SHOW YOUR MATH:** In your internal logic, explicitly subtract the points.
 
 ### OUTPUT FORMAT:
@@ -206,7 +203,7 @@ STUDENT: [Filename]
 
 **10. REFERENCES: [Score]/10**
 * **✅ Strengths:** [Source count]
-* **⚠️ Improvements:** [Formatting]
+* **⚠️ Improvements:** [Formatting (No deduction for minor errors)]
 
 **💡 TOP 3 ACTIONABLE STEPS FOR NEXT TIME:**
 1. [Step 1]
