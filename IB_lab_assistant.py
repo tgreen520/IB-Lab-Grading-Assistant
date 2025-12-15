@@ -65,20 +65,22 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 7. DATA ANALYSIS (10 pts):
 - UNCERTAINTY PROPAGATION (IB CHEMISTRY STANDARD):
   * MUST use Absolute Uncertainty (for + / -) and Percentage Uncertainty (for * / /).
-  * NOTE: Intermediate steps (like showing the specific conversion of absolute to % before adding) are NOT required. Do NOT deduct for missing intermediate steps if the result is correct.
+  * NOTE: Intermediate steps are NOT required. Do NOT deduct for missing intermediate steps if the result is correct.
   * No propagation attempted: -2.0 pts.
   * Propagation incorrect (wrong formula/logic): -1.0 pt.
 - GRAPHS (Bar or Scatter allowed based on context):
-  * Axis labels/Units missing: -1.0 pt.
+  * Graph Missing: -2.0 pts. (NOTE: If Graph is missing, do NOT deduct for missing axis labels).
+  * Graph Present but Axis labels/Units missing: -1.0 pt.
   * MULTIPLE TRIALS RULE: If >1 trial performed, graph MUST show AVERAGES. (If missing: -2.0 pts).
   * SCATTER PLOT REQ: Trendline, Equation, R^2 (if applicable). 
   * BAR GRAPH REQ: Average values shown.
 
 8. CONCLUSION (10 pts) [STRICT DEDUCTIONS]:
-- UNCERTAINTY IMPACT: 
-  * Discussed fully: 0 deduction.
-  * Mentioned but NOT discussed fully: -1.0 pt (Partial).
-  * Completely missing in Conclusion AND Evaluation: -2.0 pts.
+- UNCERTAINTY IMPACT (CROSS-CHECK EVALUATION): 
+  * Check BOTH Conclusion and Evaluation.
+  * If discussed in EITHER section: 0 deduction.
+  * Mentioned but NOT discussed fully (in either): -1.0 pt (Partial).
+  * Completely missing in BOTH Conclusion AND Evaluation: -2.0 pts.
 - IV/DV RELATIONSHIP: Must explain graph trend. (If poor: -1.0)
 - THEORY: Connect to chemical theory.
   * Explained fully: 0 deduction.
@@ -125,18 +127,15 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
 3.  **DATA ANALYSIS (Section 7) - IB CHEM METHODOLOGY:**
     * **Propagation Check:** The student must use **Absolute Uncertainty** (sum of errors) or **Percentage Uncertainty** (sum of percentages).
       * **CRITICAL - NO INTERMEDIATE STEPS REQUIRED:** Do NOT penalize the student if they do not show the explicit step of converting absolute uncertainty to percentage uncertainty. As long as the calculation/logic is correct, it is fine.
-      * **Do NOT expect complex Physics formulas** (like partial derivatives or quadrature).
       * If propagation is missing completely: Deduct 2.0.
-      * If present but mathematically invalid (even for IB standards): Deduct 1.0.
-    * **Graphing Averages:**
-      * If **Multiple Trials** were performed: The graph **MUST** be of the **AVERAGE** data.
-      * If they graphed raw trials -> **Deduct 2.0 points**.
+    * **Graphing Logic (NO DOUBLE JEOPARDY):**
+      * **Scenario A (No Graph):** Deduct 2.0 points. **STOP.** Do NOT deduct an extra 1.0 for missing axes (you cannot deduct for axes on a graph that doesn't exist).
+      * **Scenario B (Graph Exists):** Check axis labels. If missing, Deduct 1.0. Check for Averages (if multiple trials). If raw data graphed, Deduct 2.0.
 
-4.  **CONCLUSION (Section 8) - LOGIC GATES:**
-    * **Uncertainty Impact:** * Look for discussion on reliability, error bars, or validity.
-      * **Full Discussion:** 0 deduction.
-      * **Mentioned but Shallow/Incomplete:** **Deduct 1.0 point**.
-      * **Completely Missing:** **Deduct 2.0 points**.
+4.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
+    * **Uncertainty Impact:** * **CRITICAL:** Look at BOTH Section 8 (Conclusion) and Section 9 (Evaluation).
+      * If the student discusses how uncertainty affected data in **EITHER** section -> **0 Deduction**.
+      * Only deduct 2.0 points if it is missing from **BOTH** sections.
     * **Theory:**
       * **Full Explanation:** 0 deduction.
       * **Mentioned but Incomplete:** **Deduct 1.0 point**.
@@ -191,13 +190,13 @@ STUDENT: [Filename]
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [Calculations/Graph]
 * **⚠️ Improvements:** [**IB PROPAGATION & GRAPH CHECK:** 1. "Used IB Chem formulas (Absolute/Percent)? Missing (-2) or Incorrect (-1)."
-  2. "Multiple trials were found, but the graph did not show Average values (-2)."
-  3. "Axis labels/units missing (-1)." 
+  2. "Graph missing? (-2). (Note: If missing, do not deduct for axes)."
+  3. "Graph exists but axis labels missing? (-1)."
   4. "**NOTE:** Do not deduct for missing intermediate steps in uncertainty calculation."]
 
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [Data citation]
-* **⚠️ Improvements:** [**SCORING LOGIC:** - Uncertainty Impact: Missing (-2) OR Partial (-1).
+* **⚠️ Improvements:** [**SCORING LOGIC:** - Uncertainty Impact: Checked Both Sections? Missing in BOTH (-2) OR Partial (-1).
   - Theory: Missing (-2) OR Incomplete (-1).
   - Quant Data: Missing (-2).]
 
@@ -339,7 +338,6 @@ def process_uploaded_files(uploaded_files):
 
 def recalculate_total_score(text):
     try:
-        # Improved Regex to catch scores even if formatting is slightly off (case insensitive, flexible spacing)
         pattern = r"\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10"
         matches = re.findall(pattern, text, re.IGNORECASE)
         if matches:
@@ -389,7 +387,7 @@ def grade_submission(file, model_id):
         "   - **Note:** Do NOT deduct points if the student did not show the intermediate step of converting absolute uncertainties to percentages. As long as the calculation/logic is correct, it is fine.\n"
         "   - **Averages:** If multiple trials were done, the graph MUST be of the AVERAGES. If they graphed raw trials -> Deduct 2 pts.\n"
         "3. **CONCLUSION:**\n"
-        "   - **Uncertainty Impact:** If mentioned but NOT discussed fully -> Deduct 1.0 pt. If completely missing -> Deduct 2.0 pts.\n"
+        "   - **Uncertainty Impact:** CHECK BOTH SECTIONS (Conclusion & Evaluation). If discussed in either -> NO DEDUCTION. Only deduct if missing from BOTH.\n"
         "   - **Theory:** If mentioned but explanation is incomplete -> Deduct 1.0 pt. If completely missing -> Deduct 2.0 pts.\n"
     )
 
