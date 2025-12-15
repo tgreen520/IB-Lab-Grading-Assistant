@@ -44,9 +44,8 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Method of measuring the DV must be explicitly stated.
   * DV must be specific and measurable (not vague).
 - DEDUCTIONS:
-  * Missing units for IV/DV: -1.0 pt.
-  * Missing explanation of measurement method: -1.0 pt.
-  * DV is vague/not measurable: -1.0 pt.
+  * Missing units for IV/DV: -0.5 pts.
+  * DV measurement is vague or measurement method is missing: -1.0 pt.
 
 4. VARIABLES (10 pts):
 - Criteria: IV, DV, 3+ Controls.
@@ -131,9 +130,9 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
     * *Example:* `<<<MATH: Starting 10.0. Deductions: Diagram (-0.5). Calculation: 10.0 - 0.5 = 9.5.>>>`
     * The system will remove these blocks before showing the user, so be precise inside them.
 
-2.  **HYPOTHESIS (Section 3) - SPECIFICITY:**
-    * **Check for Units:** Did they state the units for IV and DV? (e.g., "Temperature (°C)"). If missing -> **Deduct 1.0**.
-    * **Check Measurement Method:** Did they say *how* they will measure the DV? (e.g., "using a stopwatch"). If missing -> **Deduct 1.0**.
+2.  **HYPOTHESIS (Section 3) - SPECIFICITY & UNITS:**
+    * **Check for Units:** Did they state the units for the IV and DV? (e.g., "Temperature (°C)"). If missing -> **Deduct 0.5**.
+    * **Check Measurement Method:** Did they say *how* they will measure the DV? (e.g., "using a stopwatch", "using a colorimeter"). If vague or missing -> **Deduct 1.0**.
     * **Check Specificity:** Is the DV specific? (e.g., "Rate of reaction" is vague; "Time for color change in seconds" is specific). If vague -> **Deduct 1.0**.
 
 3.  **DATA ANALYSIS (Section 7) - NO DOUBLE JEOPARDY:**
@@ -178,7 +177,7 @@ STUDENT: [Filename]
 <<<MATH: ...>>>
 **3. HYPOTHESIS: [Score]/10**
 * **✅ Strengths:** [Prediction]
-* **⚠️ Improvements:** [**CHECK:** Units included for IV/DV? Measurement method explained? DV specific? Deduct -1.0 for each missing element.]
+* **⚠️ Improvements:** [**CHECK:** Units for IV/DV included? (-0.5 if no). Measurement method explained & specific? (-1.0 if vague/missing).]
 
 <<<MATH: ...>>>
 **4. VARIABLES: [Score]/10**
