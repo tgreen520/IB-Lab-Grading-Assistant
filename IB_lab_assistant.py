@@ -50,16 +50,20 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 5. PROCEDURES & MATERIALS (10 pts):
 - Criteria: Numbered steps, quantities, safety, diagram.
 - UNCERTAINTIES & PRECISION:
-  * Uncertainties of measuring devices missing: -1.0 pt.
+  * Uncertainties can be listed here OR in Data Tables.
+  * If Uncertainties are completely missing:
+    - If only 1 measuring device used: -0.5 pts.
+    - If >1 measuring devices used: -1.0 pt.
   * Uncertainties not reported with correct precision: -0.5 pts.
   * Instrument precision does not match uncertainty precision: -0.5 pts.
   * Diagram missing: -0.5 pt.
 
 6. RAW DATA (10 pts):
 - Criteria: Qualitative observations, tables, units, sig figs.
+- REQUIREMENT: Uncertainties must be reported in Data Tables (headers or cells).
 
 7. DATA ANALYSIS (10 pts):
-- UNCERTAINTY PROPAGATION:
+- UNCERTAINTY PROPAGATION (Synonyms: "Uncertainty Calculation", "Error Calculation"):
   * No propagation attempted: -2.0 pts.
   * Propagation incorrect: -1.0 pt.
 - GRAPHS (Bar or Scatter allowed based on context):
@@ -69,7 +73,9 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * BAR GRAPH REQ: Average values shown.
 
 8. CONCLUSION (10 pts) [STRICT DEDUCTIONS]:
-- UNCERTAINTY IMPACT: Must discuss how uncertainty affected data/interpretation. (If missing here AND in Evaluation: -2.0 pts).
+- UNCERTAINTY IMPACT: Must discuss how uncertainty affected data/interpretation. 
+  * LOOK FOR: "Reliability", "Validity", "Error Bars overlap", "Systematic Error impact".
+  * If missing here AND in Evaluation: -2.0 pts.
 - IV/DV RELATIONSHIP: Must explain graph trend. (If poor: -1.0)
 - THEORY: Connect to chemical theory. (If missing: -2.0)
 - QUANTITATIVE SUPPORT: Must cite specific numbers. (If missing: -2.0)
@@ -101,24 +107,28 @@ Your goal is to grade student lab reports according to the specific rules below.
     * **Decimal Scores are MANDATORY.** (e.g., 9.5). DO NOT round down.
 
 2.  **MATERIALS & UNCERTAINTIES (Section 5):**
-    * Check for a list of measuring devices.
-    * Are uncertainties listed (e.g., ±0.01 g)? If NO -> **Deduct 1.0**.
-    * Do the sig figs match (e.g., 10.00 ± 0.05 is WRONG, 10.00 ± 0.01 is RIGHT)? If NO -> **Deduct 0.5**.
+    * **Locating Uncertainties:** Look for uncertainties (e.g., ±0.01) in the Materials list **OR** in the headers of Data Tables. If found in tables, credit them for this section.
+    * **Deduction Logic if Missing:**
+      * Estimate how many types of measuring devices were used.
+      * If **ONLY 1 type** used & uncertainty missing -> **Deduct 0.5**.
+      * If **>1 types** used & uncertainty missing -> **Deduct 1.0**.
+    * **Precision Check:** Do sig figs match? (e.g., 10.00 ± 0.05 is WRONG, 10.00 ± 0.01 is RIGHT). If NO -> **Deduct 0.5**.
 
 3.  **DATA ANALYSIS (Section 7) - CRITICAL:**
-    * **Propagation:** Did they calculate error propagation?
-      * **NO:** Deduct 2.0 points.
-      * **YES but Wrong:** Deduct 1.0 point.
+    * **Propagation Check:** Look for "Propagation of Uncertainty", "Uncertainty Calculation", or "Error Calculation". These are ALL VALID.
+      * If **NONE** of these exist: Deduct 2.0 points.
+      * If present but mathematically invalid: Deduct 1.0 point.
     * **Graphing Averages:**
       * Detect if **Multiple Trials** were performed.
       * If YES: The graph **MUST** be of the **AVERAGE** data.
       * If they graphed all trials individually or just one trial -> **Deduct 2.0 points**.
-    * **Graph Type:** * Scatter (Continuous Data) -> Check for Trendline/Eq/R^2.
-      * Bar (Categorical Data) -> Check for Bars of Averages.
 
 4.  **CONCLUSION (Section 8) - STRICT DEDUCTIONS:**
-    * **Uncertainty Impact:** Did they discuss how the uncertainty affected their interpretation?
-      * If MISSING in both Section 8 and Section 9 -> **Deduct 2.0 points** (apply deduction here in Section 8).
+    * **Uncertainty Impact (Be Lenient/Smart):**
+      * The student does NOT need a standalone section called "Impact of Uncertainty."
+      * **LOOK FOR:** Sentences like "The error bars overlap, suggesting...", "The high percentage error indicates...", "The data is not reliable because...", or "Precision was low due to...".
+      * **SCORING:** * If they mention how errors/uncertainty influenced the validity/reliability/trend -> **FULL CREDIT**.
+        * Only deduct 2.0 points if there is **ZERO** mention of error/uncertainty influence in Section 8 OR Section 9.
     * **Quantitative Data:** Did they quote specific numbers? If NO, **Deduct 2.0 points**.
     * **Theory:** Did they connect to theory? If NO, **Deduct 1.0 point**.
 
@@ -160,7 +170,7 @@ STUDENT: [Filename]
 
 **5. PROCEDURES & MATERIALS: [Score]/10**
 * **✅ Strengths:** [Safety/Steps]
-* **⚠️ Improvements:** [**UNCERTAINTY CHECK:** "Did you list device uncertainties? (-1 if no). Did precision match? (-0.5 if no)."]
+* **⚠️ Improvements:** [**UNCERTAINTY CHECK:** "Uncertainties found in Materials/Tables? (-0.5 if 1 missing, -1.0 if >1 missing). Precision match? (-0.5)."]
 
 **6. RAW DATA: [Score]/10**
 * **✅ Strengths:** [Tables/Units]
@@ -168,13 +178,13 @@ STUDENT: [Filename]
 
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [Calculations/Graph]
-* **⚠️ Improvements:** [**PROPAGATION & GRAPH CHECK:** 1. "Uncertainty propagation was missing (-2) or incorrect (-1)."
+* **⚠️ Improvements:** [**PROPAGATION & GRAPH CHECK:** 1. "Uncertainty/Error calculation missing (-2) or incorrect (-1)."
   2. "Multiple trials were found, but the graph did not show Average values (-2)."
   3. "Axis labels/units missing (-1)." ]
 
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [Data citation]
-* **⚠️ Improvements:** [**IMPACT CHECK:** "You did not discuss the impact of uncertainty on your data interpretation (-2)." 
+* **⚠️ Improvements:** [**IMPACT CHECK:** "Did you discuss how uncertainty affected your interpretation (e.g. reliability, error bars)? If not: -2." 
   Also check: Theory (-1), Quant Data (-2).]
 
 **9. EVALUATION: [Score]/10**
@@ -356,13 +366,15 @@ def grade_submission(file, model_id):
     user_instructions = (
         "Please grade this lab report based on the provided rubric.\n"
         "⚠️ CRITICAL NEW INSTRUCTIONS:\n"
-        "1. **MATERIALS (Section 5):** Look specifically for uncertainty values on devices (e.g. ±0.05). If missing, deduct 1 point.\n"
+        "1. **MATERIALS (Section 5):** Look for uncertainty values (±) in the Materials list OR in Data Table headers. If found, count as valid.\n"
+        "   - If completely MISSING: Deduct 0.5 (if 1 device used) or 1.0 (if >1 devices used).\n"
         "2. **DATA ANALYSIS (Section 7):**\n"
-        "   - **Uncertainty Propagation:** MANDATORY. Deduct 2 pts if missing. Deduct 1 pt if incorrect.\n"
+        "   - **Uncertainty Propagation:** Check for 'Uncertainty Calculation' or 'Error Calculation'. Treat these as synonyms for Propagation. Deduct 2 pts if ALL are missing.\n"
         "   - **Graphs:** Check if Bar or Scatter is appropriate.\n"
         "   - **Averages:** If multiple trials were done, the graph MUST be of the AVERAGES. If they graphed raw trials -> Deduct 2 pts.\n"
         "3. **CONCLUSION:**\n"
-        "   - **Uncertainty Impact:** They MUST discuss how uncertainty affected data interpretation. If missing here AND in Evaluation -> Deduct 2 pts.\n"
+        "   - **Uncertainty Impact:** Look closely for phrases like 'data is unreliable due to...', 'error bars overlap', 'limitations of the apparatus', or 'uncertainty is high'.\n"
+        "   - If they link error/uncertainty to their interpretation (even implicitly), CREDIT IT. Only deduct 2 pts if completely absent.\n"
     )
 
     if ext == 'docx':
