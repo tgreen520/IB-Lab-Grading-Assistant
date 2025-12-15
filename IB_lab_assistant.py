@@ -79,7 +79,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 - GRAPHS (Bar or Scatter allowed based on context):
   * Graph Missing: -2.0 pts. (NOTE: If Graph is missing, do NOT deduct for missing axis labels or missing averages. Max deduction is -2.0).
   * Graph Present but Axis labels/Units missing: -1.0 pt.
-  * MULTIPLE TRIALS RULE: If >1 trial performed, graph MUST show AVERAGES. (If missing: -2.0 pts).
+  * MULTIPLE TRIALS RULE: If >1 trial performed, graph MUST show AVERAGES. (If missing: -2.0 pts). Do not deduct points if only one trial is performed. 
   * SCATTER PLOT REQ: Trendline, Equation, R^2 (if applicable). 
   * BAR GRAPH REQ: Average values shown.
 
@@ -119,7 +119,6 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 - Criteria: 3+ credible sources = 9.0 min score.
 - FORMATTING: Minor errors (italics, periods, capitalization) = 0 deduction. Only deduct if citation is unintelligible or missing.
 """
-
 # --- 4. SYSTEM PROMPT (UPDATED LOGIC) ---
 SYSTEM_PROMPT = """You are an expert IB Chemistry Lab Grader. 
 Your goal is to grade student lab reports according to the specific IB Chemistry standards below.
@@ -150,16 +149,17 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
       * **Scenario A (No Graph):** Deduct 2.0 points. **STOP.** Do NOT deduct for missing axes or averages.
       * **Scenario B (Graph Exists):** Check axis labels (missing? -1.0). Check if it graphs Averages (if multiple trials). If raw data graphed -> -2.0.
 
-5.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
+5.  **CONCLUSION (Section 8) - CROSS-CHECK & ANTI-HALLUCINATION:**
     * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation.
       * **Discussion + Specific Impact Explained:** 0 Deduction.
       * **Discussion Present + Impact Missing:** If they mention uncertainty in either section, but fail to explain the specific impact on the data -> **Deduct 1.0**.
       * **No Discussion:** If NO mention of uncertainty in EITHER section -> **Deduct 2.0**.
     * **Literature Comparison:** Check if they compared data to published literature. If NO -> **Deduct 1.0 point**.
-    * **Quantitative Data Support:**
-      * Cited **Collected** Data (raw values) -> 0 Deduction.
-      * Cited **Derived** Data (averages/rates/R^2) ONLY (no raw data) -> **Deduct 1.0 point**.
-      * Cited **NO** Data -> **Deduct 2.0 points**.
+    * **Quantitative Data Support (STRICT VERIFICATION):**
+      * **VERIFY:** Look for actual numbers/digits in the Conclusion text (e.g., "5.45 g", "10% decrease"). If the student only says "The values increased" without citing specific numbers, this counts as MISSING.
+      * **Collected (Raw) Data Cited:** (e.g., "Trial 1 was 5.0") -> **0 Deduction**.
+      * **Derived Data ONLY Cited:** (e.g., "Average was 5.0" or "R^2 was 0.98", but no raw data) -> **Deduct 1.0 point**.
+      * **NO Data Cited:** (No numbers found in text) -> **Deduct 2.0 points**.
 
 6.  **REFERENCES (Section 10) - STRICT LENIENCY:**
     * **Formatting Errors:** If you see minor formatting errors (dates, italics, punctuation), mention them in "Improvements" but deduct **0.0 points**.
@@ -220,7 +220,7 @@ STUDENT: [Filename]
 * **⚠️ Improvements:** [**SCORING LOGIC:** - "Literature Comparison: Did you compare to published literature? (Missing = -1)."
   - "Uncertainty Impact: (Check Conc & Eval). Missing in BOTH = -2, Present but specific impact missing = -1."
   - "Theory: Missing (-2) or Incomplete (-1)?"
-  - "Quant Data: Only derived data (-1)? Missing all (-2)?"]
+  - "Quant Data: Only derived data (-1)? Missing all (-2)? (Verify numbers exist)."]
 
 <<<MATH: ...>>>
 **9. EVALUATION: [Score]/10**
