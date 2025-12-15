@@ -73,21 +73,21 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 - UNCERTAINTY PROPAGATION (IB CHEMISTRY STANDARD):
   * MUST use Absolute Uncertainty (for + / -) and Percentage Uncertainty (for * / /).
   * NOTE: Intermediate steps are NOT required. Do NOT deduct for missing intermediate steps if the result is correct.
-  * No propagation attempted: -2.0 pts.
-  * Propagation incorrect (wrong formula/logic): -1.0 pt.
+  * **SCORING:**
+    - No propagation attempted at all: -2.0 pts.
+    - Propagation attempted but incorrect (wrong formula/logic): -1.0 pt.
 - GRAPHS (Bar or Scatter allowed based on context):
   * Graph Missing: -2.0 pts. (NOTE: If Graph is missing, do NOT deduct for missing axis labels or missing averages. Max deduction is -2.0).
   * Graph Present but Axis labels/Units missing: -1.0 pt.
   * MULTIPLE TRIALS RULE: If >1 trial performed, graph MUST show AVERAGES. (If missing: -2.0 pts).
-  * SINGLE TRIAL RULE: If only 1 trial performed, graphing the raw data is ACCEPTABLE. (0 deduction).
   * SCATTER PLOT REQ: Trendline, Equation, R^2 (if applicable). 
-  * BAR GRAPH REQ: Average values shown (if applicable).
+  * BAR GRAPH REQ: Average values shown.
 
 8. CONCLUSION (10 pts) [STRICT DEDUCTIONS]:
 - UNCERTAINTY IMPACT (CROSS-CHECK EVALUATION): 
   * Check BOTH Conclusion and Evaluation.
-  * If discussed in EITHER section (specifically linked to data): 0 deduction.
-  * If discussed generally (e.g., in a separate section) but NOT explicitly linked to data interpretation: -1.0 pt (Partial).
+  * If discussed in EITHER section: 0 deduction.
+  * Mentioned but NOT discussed fully (in either): -1.0 pt (Partial).
   * Completely missing in BOTH Conclusion AND Evaluation: -2.0 pts.
   * NOTE: When crediting this, explicitly state: "Uncertainty discussion can be in the conclusion or evaluation section."
 - LITERATURE COMPARISON:
@@ -98,7 +98,10 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Explained fully: 0 deduction.
   * Discussed but incomplete explanation: -1.0 pt.
   * Completely missing: -2.0 pts.
-- QUANTITATIVE SUPPORT: Must cite specific numbers. (If missing: -2.0)
+- QUANTITATIVE SUPPORT: 
+  * Must cite collected raw data specific numbers.
+  * If only DERIVED data (averages, rates, R^2) is discussed but collected data is missing: -1.0 pt.
+  * If NO quantitative data (neither derived nor collected) is cited: -2.0 pts.
 - QUALITATIVE SUPPORT: Must cite observations. (If missing: -0.5)
 - STATISTICS: Explain R/R^2 (if Scatter used).
 
@@ -128,26 +131,28 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
     * You MUST perform your score calculations inside a special block: `<<<MATH: 10.0 - 0.5 = 9.5>>>`.
     * This block must appear **immediately before** the section header.
     * You MUST list every specific deduction in this block to ensure the subtraction is correct.
+    * *Example:* `<<<MATH: Starting 10.0. Deductions: Diagram (-0.5). Calculation: 10.0 - 0.5 = 9.5.>>>`
     * The system will remove these blocks before showing the user, so be precise inside them.
 
-2.  **STRENGTHS FEEDBACK:**
-    * **Be Specific:** Do not just say "Good job."
-    * **Be Verbose:** Write 3-4 sentences. Quote specific data points, sentences, or techniques the student used.
-    * *Example:* "Excellent use of stoichiometry in the Data Analysis. Specifically, your calculation of the theoretical yield of 2.45g aligned perfectly with the limiting reactant logic."
+2.  **HYPOTHESIS (Section 3) - SPECIFICITY & UNITS:**
+    * **Check for Units:** Did they state the units for the IV and DV? (e.g., "Temperature (°C)"). If missing -> **Deduct 0.5**.
+    * **Check Measurement Method:** Did they say *how* they will measure the DV? (e.g., "using a stopwatch", "using a colorimeter"). If vague or missing -> **Deduct 1.0**.
+    * **Check Specificity:** Is the DV specific? (e.g., "Rate of reaction" is vague; "Time for color change in seconds" is specific). If vague -> **Deduct 1.0**.
 
 3.  **DATA ANALYSIS (Section 7) - NO DOUBLE JEOPARDY:**
-    * **Scenario A (No Graph):** Deduct 2.0 points. **STOP.** Do NOT deduct for missing axes/averages.
-    * **Scenario B (Graph Exists):** Check axis labels (missing? -1.0).
-    * **Scenario C (Single Trial):** If the student only performed 1 trial, graphing the raw data is **CORRECT**. Do not deduct points for "Missing Averages."
+    * **Uncertainty Propagation:** * If **Attempted** (even if wrong/incomplete) -> **Deduct 1.0**.
+      * If **Not Attempted** at all -> **Deduct 2.0**.
+    * **Graph Logic:**
+      * **Scenario A (No Graph):** Deduct 2.0 points. **STOP.** Do NOT deduct for missing axes or averages.
+      * **Scenario B (Graph Exists):** Check axis labels (missing? -1.0). Check if it graphs Averages (if multiple trials). If raw data graphed -> -2.0.
 
 4.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
-    * **Uncertainty Impact:**
-      * Full Discussion (Linked to data): 0 Deduction.
-      * **Partial Discussion:** If discussed in a separate section or generally, but not explicitly linked to how it skewed the *specific* data collection/interpretation -> **Deduct 1.0 (Partial)**.
-      * Missing: Deduct 2.0.
+    * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation. If discussed in EITHER -> **0 Deduction**. Only deduct if missing from BOTH.
     * **Literature Comparison:** Check if they compared data to published literature. If NO -> **Deduct 1.0 point**.
-    * **Theory:** Full explanation = 0. Incomplete = -1.0. Missing = -2.0.
-    * **Quantitative Data:** Missing = -2.0.
+    * **Quantitative Data Support:**
+      * Cited **Collected** Data (raw values) -> 0 Deduction.
+      * Cited **Derived** Data (averages/rates/R^2) ONLY (no raw data) -> **Deduct 1.0 point**.
+      * Cited **NO** Data -> **Deduct 2.0 points**.
 
 5.  **REFERENCES (Section 10) - STRICT LENIENCY:**
     * **Formatting Errors:** If you see minor formatting errors (dates, italics, punctuation), mention them in "Improvements" but deduct **0.0 points**.
@@ -198,17 +203,17 @@ STUDENT: [Filename]
 <<<MATH: ...>>>
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
-* **⚠️ Improvements:** [**IB PROPAGATION & GRAPH CHECK:** - "Uncertainty Propagation: Missing (-2) or Incorrect (-1)?"
+* **⚠️ Improvements:** [**IB PROPAGATION & GRAPH CHECK:** - "Uncertainty Propagation: Attempted but wrong (-1)? Not attempted (-2)?"
   - "Graph: Missing (-2)? (If missing, do not deduct for axes/averages)."
-  - "Axes/Averages: (Only check if graph exists. If Single Trial -> No deduction for raw data)."]
+  - "Axes/Averages: (Only check if graph exists)."]
 
 <<<MATH: ...>>>
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [3-4 sentences. Quote student work. Be specific.]
 * **⚠️ Improvements:** [**SCORING LOGIC:** - "Literature Comparison: Did you compare to published literature? (Missing = -1)."
-  - "Uncertainty Impact: (Note: Uncertainty discussion can be in the conclusion or evaluation section). Missing in BOTH = -2, Present but general/not linked to data = -1."
+  - "Uncertainty Impact: (Note: Uncertainty discussion can be in the conclusion or evaluation section). Missing in BOTH = -2, Partial = -1."
   - "Theory: Missing (-2) or Incomplete (-1)?"
-  - "Quant Data: Missing (-2)?"]
+  - "Quant Data: Only derived data (-1)? Missing all (-2)?"]
 
 <<<MATH: ...>>>
 **9. EVALUATION: [Score]/10**
