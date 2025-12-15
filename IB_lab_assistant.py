@@ -81,6 +81,10 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * If discussed in EITHER section: 0 deduction.
   * Mentioned but NOT discussed fully (in either): -1.0 pt (Partial).
   * Completely missing in BOTH Conclusion AND Evaluation: -2.0 pts.
+  * NOTE: When crediting this, explicitly state: "Uncertainty discussion can be in the conclusion or evaluation section."
+- LITERATURE COMPARISON:
+  * Must compare results to published literature/accepted values to support or refute findings.
+  * If missing: -1.0 pt.
 - IV/DV RELATIONSHIP: Must explain graph trend. (If poor: -1.0)
 - THEORY: Connect to chemical theory.
   * Explained fully: 0 deduction.
@@ -129,6 +133,7 @@ Your goal is to grade student lab reports according to the specific IB Chemistry
 
 4.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
     * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation. If discussed in EITHER -> **0 Deduction**. Only deduct if missing from BOTH.
+    * **Literature Comparison:** Did they compare their data to published literature or accepted values to support/refute their findings? If NO -> **Deduct 1.0 point**.
     * **Theory:** Full explanation = 0. Incomplete = -1.0. Missing = -2.0.
     * **Quantitative Data:** Missing = -2.0.
 
@@ -179,7 +184,8 @@ STUDENT: [Filename]
 
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [Data citation]
-* **⚠️ Improvements:** [**SCORING LOGIC:** - "Uncertainty Impact: Discussed in Conc/Eval? (Missing in BOTH = -2, Partial = -1)."
+* **⚠️ Improvements:** [**SCORING LOGIC:** - "Literature Comparison: Did you compare to published literature? (Missing = -1)."
+  - "Uncertainty Impact: (Note: Uncertainty discussion can be in the conclusion or evaluation section). Missing in BOTH = -2, Partial = -1."
   - "Theory: Missing (-2) or Incomplete (-1)?"
   - "Quant Data: Missing (-2)?"]
 
@@ -189,7 +195,7 @@ STUDENT: [Filename]
 
 **10. REFERENCES: [Score]/10**
 * **✅ Strengths:** [Source count]
-* **⚠️ Improvements:** [Only strict errors (missing sources)]
+* **⚠️ Improvements:** [Formatting (No deduction for minor errors)]
 
 **💡 TOP 3 ACTIONABLE STEPS FOR NEXT TIME:**
 1. [Step 1]
@@ -371,6 +377,7 @@ def grade_submission(file, model_id):
         "   - **Averages:** If multiple trials were done, the graph MUST be of the AVERAGES. If they graphed raw trials -> Deduct 2 pts.\n"
         "3. **CONCLUSION:**\n"
         "   - **Uncertainty Impact:** CHECK BOTH SECTIONS (Conclusion & Evaluation). If discussed in either -> NO DEDUCTION. Only deduct if missing from BOTH.\n"
+        "   - **Literature Comparison:** Check if they compared data to published literature. If NO -> Deduct 1.0 pt.\n"
         "   - **Theory:** If mentioned but explanation is incomplete -> Deduct 1.0 pt. If completely missing -> Deduct 2.0 pts.\n"
     )
 
