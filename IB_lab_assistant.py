@@ -744,7 +744,7 @@ with st.sidebar:
     # UPDATED DEFAULT MODEL ID
     user_model_id = st.text_input(
         "🤖 Model ID", 
-        value="claude-4-5-sonnet-20250929", 
+        value="claude-sonnet-4-20250514", 
         help="Change this if you have a specific Beta model or newer ID"
     )
     
