@@ -53,6 +53,13 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * 10/10: All defined + explanations.
   * 9.5/10: DV measurement vague (-0.5).
   * 9.0/10: Explanations missing (-1.0).
+  - DEDUCTIONS:
+  * Control variables missing (fewer than 3): -4.0
+  * Control variables not justified: -1.0
+  * Description of control variables vague: -1.0
+  * Independent variable not thoroughly explained: -1.0
+  * Dependent variable not thoroughly explained: -1.0
+  * DV measurement vague: -0.5
 
 5. PROCEDURES & MATERIALS (10 pts):
 - Criteria: Numbered steps, quantities, safety, diagram.
@@ -63,7 +70,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
     - Missing in Materials BUT listed in Data Section: -0.5 pts.
     - Completely missing (not in Materials OR Data): -1.0 pt.
   * Precision mismatch (uncertainty vs. measurement): -0.5 pts.
-  * Diagram missing: -0.5 pt.
+  * Diagram or photograph missing: -0.5 pt.
 
 6. RAW DATA (10 pts):
 - Criteria: Qualitative observations, tables, units, sig figs.
@@ -102,7 +109,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * If only DERIVED data (averages, rates, R^2) is discussed but collected data is missing: -1.0 pt.
   * If NO quantitative data (neither derived nor collected) is cited: -2.0 pts.
 - QUALITATIVE SUPPORT: Must cite observations. (If missing: -0.5)
-- STATISTICS: Explain R/R^2 (if Scatter used).
+- STATISTICS: Explain R and R^2 (if Scatter used). (If missing: -2.0. If partially explained: -1.0)
 
 9. EVALUATION (10 pts) [STRICT QUALITY GATES]:
 - REQUIREMENT: List errors + Specific Directional Impact + Specific Improvement.
