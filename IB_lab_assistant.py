@@ -744,7 +744,7 @@ with st.sidebar:
     # UPDATED DEFAULT MODEL ID
     user_model_id = st.text_input(
         "🤖 Model ID", 
-        value="claude-sonnet-4-20250514", 
+        value="claude-3-sonnet-20240229", # Updated to a valid default ID
         help="Change this if you have a specific Beta model or newer ID"
     )
     
@@ -776,7 +776,8 @@ with st.sidebar:
     st.divider() 
     
     with st.expander("View Grading Criteria"):
-        st.text(PRE_IB_RUBRIC)
+        # CHANGED FROM st.text(PRE_IB_RUBRIC) TO st.text(IB_RUBRIC)
+        st.text(IB_RUBRIC)
 
 # --- 7. MAIN INTERFACE ---
 st.title("🧪 Pre-IB Lab Grader")
