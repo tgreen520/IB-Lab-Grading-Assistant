@@ -11,7 +11,7 @@ from io import BytesIO
 
 # --- 1. PAGE SETUP (MUST BE FIRST) ---
 st.set_page_config(
-    page_title="IB Lab Assistant", 
+    page_title="IB Lab Grader", 
     page_icon="🧪", 
     layout="wide"
 )
