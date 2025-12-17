@@ -218,7 +218,7 @@ Your goal is not just to grade, but to **teach** the student how to improve by r
 
 ### OUTPUT FORMAT (STRICTLY FOLLOW THIS STRUCTURE):
 
-# 🔍 SCORE: [Total Points]/100
+# 📝 SCORE: [Total Points]/100
 STUDENT: [Filename]
 
 **📊 OVERALL SUMMARY:**
@@ -431,15 +431,27 @@ def clean_hidden_math(text):
 
 def recalculate_total_score(text):
     try:
-        pattern = r"\*\*\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10\*\*"
+        # 1. Find all section scores (Robust Regex)
+        # Looks for: "1. SECTION NAME: 9.5/10" (Ignores asterisks/bolding for safety)
+        pattern = r"\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10"
         matches = re.findall(pattern, text, re.IGNORECASE)
+        
         if matches:
+            # 2. Sum the scores
             total_score = sum(float(m) for m in matches)
             if total_score.is_integer():
                 total_score = int(total_score)
             else:
                 total_score = round(total_score, 1)
-            text = re.sub(r"#\s*📝\s*SCORE:\s*[\d\.]+/100", f"# 📝 SCORE: {total_score}/100", text, count=1)
+            
+            # 3. Replace the Header Score
+            # Matches "# 📝 SCORE:" OR "# 🔍 SCORE:" to be safe
+            text = re.sub(
+                r"(#\s*[🔍📝]?\s*SCORE:\s*)[\d\.]+(/100)", 
+                f"\\1{total_score}\\2", 
+                text, 
+                count=1
+            )
     except Exception as e:
         print(f"Error recalculating score: {e}")
     return text
@@ -593,13 +605,14 @@ def grade_submission(file, model_id):
 
 def parse_score(text):
     try:
-        match = re.search(r"#\s*📝\s*SCORE:\s*([\d\.]+)/100", text)
-        if match: return match.group(1).strip()
-        match = re.search(r"SCORE:\s*([\d\.]+)/100", text)
-        if match: return match.group(1).strip()
+        # Robust Match: Handles 📝, 🔍, or no emoji at all
+        match = re.search(r"(?:#\s*[🔍📝]?\s*)?SCORE:\s*([\d\.]+)/100", text, re.IGNORECASE)
+        if match: 
+            return match.group(1).strip()
     except Exception as e:
         print(f"Error parsing score: {e}")
     return "N/A"
+
 # --- WORD FORMATTER (Strict Symbol Cleaning) ---
 def write_markdown_to_docx(doc, text):
     lines = text.split('\n')
