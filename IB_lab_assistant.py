@@ -59,6 +59,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Description of control variables vague: -1.0
   * Independent variable not thoroughly explained: -1.0
   * Dependent variable not thoroughly explained: -1.0
+  * Confusion regarding specificity of independent or dependent variable: -1.0
   * DV measurement vague: -0.5
 
 5. PROCEDURES & MATERIALS (10 pts):
@@ -765,13 +766,17 @@ def display_results_ui():
                 use_container_width=True
             )
 
-    tab1, tab2 = st.tabs(["📊 Gradebook View", "📝 Detailed Feedback"])
-    with tab1:
-        st.dataframe(csv_df, use_container_width=True)
-    with tab2:
-        for item in st.session_state.current_results:
-            with st.expander(f"📄 {item['Filename']} (Score: {item['Score']})"):
-                st.markdown(item['Feedback'])
+    # 1. Show the Gradebook Table
+    st.write("### 🏆 Gradebook")
+    st.dataframe(csv_df, use_container_width=True)
+    
+    # 2. Show the Feedback (Stacked directly below, no hiding!)
+    st.write("### 📝 Detailed Feedback History")
+    
+    # We use reversed() so the newest file is always at the top
+    for item in reversed(st.session_state.current_results):
+        with st.expander(f"📄 {item['Filename']} (Score: {item['Score']})"):
+            st.markdown(item['Feedback'])
 
 # --- 6. SIDEBAR ---
 with st.sidebar:
