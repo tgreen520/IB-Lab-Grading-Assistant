@@ -502,6 +502,7 @@ def grade_submission(file, model_id):
         "4. **VARIABLES (Section 4):**\n"
         "   - **Derived Independent Variables:** Do NOT deduct points if the student lists multiple Independent Variables where the extra ones are mathematically derived from the main IV (e.g., 'Temperature' and '1/Temperature', or 'Concentration' and 'Natural Log of Concentration'). Treat this as a single, valid IV setup.\n"
         "   - **Derived Dependent Variables:** Do NOT deduct points if the student lists multiple Dependent Variables where the extra ones are mathematically derived from the main IV (e.g., 'Temperature' and '1/Temperature', or 'Concentration' and 'Natural Log of Concentration'). Treat this as a single, valid IV setup.\n"
+        "   - **Misidentified IVs (Categorization Error):** If a student lists specific instances (e.g., 'Mass of Magnesium', 'Mass of Zinc') as multiple Independent Variables instead of the general category (e.g., 'Type of Metal'), deduct **ONLY 1.0 point** for 'Improper Variable Classification'. Do **NOT** deduct 4.0 points. Do **NOT** treat this as 'Missing Control Variables'.\n"
     )
 
     if ext == 'docx':
