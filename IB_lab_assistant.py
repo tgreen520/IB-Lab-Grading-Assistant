@@ -55,10 +55,13 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * 9.0/10: Explanations missing (-1.0).
   - DEDUCTIONS:
   * Control variables missing (fewer than 3): -4.0
+  * EXCEPTION: If the student lists specific instances (e.g. "Mass of Zinc", "Mass of Mg") as multiple IVs, do NOT deduct 4 points. Deduct ONLY 1.0 point for "Categorization Error".
   * Control variables not justified: -1.0
   * Description of control variables vague: -1.0
   * Independent variable not thoroughly explained: -1.0
   * Dependent variable not thoroughly explained: -1.0
+  * Do not deduct points for multiple independent variables if they are derived (e.g. Temp vs 1/Temp).
+  * Do not deduct for dependent variables that are derived units. 
   * DV measurement vague: -0.5
 
 5. PROCEDURES & MATERIALS (10 pts):
