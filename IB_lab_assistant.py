@@ -430,50 +430,70 @@ def clean_hidden_math(text):
     return clean_text.strip()
 
 def recalculate_total_score(text):
-    """Recalculates the total score by summing all section scores."""
+    """
+    Robustly parses section scores even if the AI uses inconsistent bolding/markdown,
+    sums them up, and overwrites the header score.
+    """
     try:
-        # IMPROVED PATTERN: Specifically matches section headers with bold formatting
-        # Looks for: **1. SECTION NAME: 9.5/10** or variations
-        pattern = r"\d+\..+?:\s*([\d\.]+)\s*/\s*10"
+        # 1. ROBUST PATTERN: 
+        # Matches: "1. SECTION NAME: [**]9.5[**]/10"
+        # \d+\.      -> Matches "1."
+        # .+?        -> Matches "FORMATTING"
+        # :          -> Matches ":"
+        # [^0-9\n]*? -> Matches any non-number junk (whitespace, **, etc.)
+        # (\d+\.?\d*) -> CAPTURE GROUP: Matches the number (e.g. "9" or "9.5")
+        # [^0-9\n]*? -> Matches junk after number
+        # /          -> Matches "/"
+        # \s*10      -> Matches "10"
+        pattern = r"\d+\..+?:[^0-9\n]*?(\d+\.?\d*)[^0-9\n]*?/\s*10"
+        
         matches = re.findall(pattern, text)
         
         if matches:
-            # Extract just the scores (second group in match)
-            scores = [float(score) for _, score in matches]
+            # Convert extracted strings to floats
+            scores = []
+            for s in matches:
+                try:
+                    scores.append(float(s))
+                except ValueError:
+                    continue
+            
+            # 2. SANITY CHECK: expected 10 sections
+            if len(scores) != 10:
+                print(f"DEBUG: Warning - Found {len(scores)} section scores (expected 10).")
+                # We proceed anyway, but this usually implies a parsing miss
+            
             total_score = sum(scores)
             
-            # Debug output (will show in terminal/logs)
-            print(f"DEBUG: Found {len(scores)} sections")
-            print(f"DEBUG: Individual scores: {scores}")
-            print(f"DEBUG: Calculated total: {total_score}")
-            
-            # Format as integer if whole number
+            # Format: Integer if whole number, else 1 decimal place
             if total_score.is_integer():
-                total_score = int(total_score)
+                total_score_str = f"{int(total_score)}"
             else:
-                total_score = round(total_score, 1)
+                total_score_str = f"{total_score:.1f}"
             
-            # Replace the header score - more flexible pattern
+            print(f"DEBUG: Recalculated Total: {total_score_str} (from {scores})")
+            
+            # 3. ROBUST HEADER REPLACEMENT
+            # Look for "SCORE:" followed by any junk, then the old score, then "/100"
             header_pattern = r"(#\s*[🔍📝]?\s*SCORE\s*:\s*)([\d\.]+)(\s*/\s*100)"
             
             if re.search(header_pattern, text, re.IGNORECASE):
                 text = re.sub(
                     header_pattern, 
-                    f"\\g<1>{total_score}\\g<3>", 
+                    f"\\g<1>{total_score_str}\\g<3>", 
                     text, 
                     count=1,
                     flags=re.IGNORECASE
                 )
-                print(f"DEBUG: Updated header to {total_score}/100")
             else:
-                print("DEBUG: Could not find score header to update")
+                # If header is missing or formatted oddly, force prepend it
+                text = f"# 📝 SCORE: {total_score_str}/100\n\n" + text
+                
         else:
-            print("DEBUG: No section scores found - pattern may not match")
+            print("DEBUG: No section scores found to recalculate.")
             
     except Exception as e:
         print(f"ERROR in recalculate_total_score: {e}")
-        import traceback
-        traceback.print_exc()
     
     return text
 
