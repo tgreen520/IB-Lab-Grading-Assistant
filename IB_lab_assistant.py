@@ -127,9 +127,13 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Generic ("be careful") = 0 pts (Deduct 2.0).
 
 10. REFERENCES (10 pts):
-- Criteria: 3+ credible sources = 9.0 min score.
-- FORMATTING: Minor errors (italics, periods, capitalization) = 0 deduction. Only deduct if citation is unintelligible or missing.
-"""
+- Criteria: Citations present for all external data/images.
+- SCORING:
+  * 10/10: References are present (any style).
+  - DEDUCTIONS:
+  * References completely missing: -2.0
+  * Citations missing for specific data/images: -1.0
+  * STRICT EXCEPTION: Do NOT deduct points for minor formatting errors (e.g. missing italics, wrong comma placement, APA vs MLA). If the link/source is there, give full points.
 
 # --- 4. SYSTEM PROMPT (UPGRADED FOR THOROUGHNESS) ---
 SYSTEM_PROMPT = """You are an expert IB Chemistry Lab Grader and Educator. 
@@ -137,6 +141,13 @@ Your goal is not just to grade, but to **teach** the student how to improve by r
 
 ### 🧪 SCIENTIFIC FORMATTING RULES (STRICT):
 1.  **NO HTML or LATEX TAGS:** Do not use `<sup>`, `<sub>`, `$`, or markdown code blocks for chemistry.
+
+### 🛡️ VOCABULARY & PHRASING IMMUNITY (DO NOT DEDUCT):
+1.  **"HCl Acid" / "H₂SO₄ Acid":** While technically redundant (since 'acid' is implied), this is a common student shorthand.
+    * **Action:** Do NOT deduct points. Do NOT mention it as an error. Treat it as correct phrasing.
+2.  **"Molar Mass of X":** If they say "Molecular Weight" instead of "Molar Mass," accept it.
+3.  **"Experiment" vs "Investigation":** Use these interchangeably.
+
 ### 🧪 YOUR OUTPUT FORMATTING (SCIENTIFIC):
 1.  **USE UNICODE CHARACTERS:** Even if the student's text looks flat ('cm3'), YOUR feedback must use proper symbols.
     * *Bad:* cm^3, dm^-3, CO_2
@@ -502,6 +513,8 @@ def grade_submission(file, model_id):
         "2. **BE EDUCATIONAL:** Explain the scientific reason behind the rules.\n"
         "3. **PHRASING:** When citing rules, simply say **'The rubric requires...'**. Do NOT cite specific section numbers (e.g. do NOT say 'Section 4 requires...').\n"
         "\n⚠️ **CRITICAL RUBRIC UPDATES TO ENFORCE:**\n"
+        "4. **FORMATTING:** \n"
+        "   - **Redundancy:** Do NOT deduct for terms like 'HCl acid' or 'Na salt'. Ignore this redundancy completely.\n"
         "1. **MATERIALS:** Look for uncertainty values (±). If missing in Materials but present in Data -> -0.5 only.\n"
         "2. **DATA ANALYSIS:** \n"
         "   - **Attempt Rule:** If they attempted ANY uncertainty math (even if wrong) -> Deduct 1.0. Only deduct 2.0 if completely missing.\n"
