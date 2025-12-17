@@ -430,46 +430,51 @@ def clean_hidden_math(text):
     return clean_text.strip()
 
 def recalculate_total_score(text):
+    """Recalculates the total score by summing all section scores."""
     try:
-        # 1. ROBUST SECTION FINDER
-        # Pattern logic:
-        # \d+\.      -> Starts with a number and dot (e.g., "1.")
-        # .+?        -> Matches ANYTHING (letters, *, spaces, brackets) lazily
-        # :          -> Stops at the colon
-        # \s* -> Optional whitespace
-        # ([\d\.]+)  -> Captures the score (e.g., "9.5")
-        # \s*/\s*10  -> Matches "/10" or "/ 10"
+        # IMPROVED PATTERN: Specifically matches section headers with bold formatting
+        # Looks for: **1. SECTION NAME: 9.5/10** or variations
         pattern = r"\d+\..+?:\s*([\d\.]+)\s*/\s*10"
         matches = re.findall(pattern, text)
         
-        # Debugging: Uncomment to see what it finds in your logs
-        # print(f"Found scores: {matches}")
-
         if matches:
-            # 2. SUM THE SCORES
-            total_score = sum(float(m) for m in matches)
+            # Extract just the scores (second group in match)
+            scores = [float(score) for _, score in matches]
+            total_score = sum(scores)
             
-            # Format as integer if possible (e.g., 90.0 -> 90)
+            # Debug output (will show in terminal/logs)
+            print(f"DEBUG: Found {len(scores)} sections")
+            print(f"DEBUG: Individual scores: {scores}")
+            print(f"DEBUG: Calculated total: {total_score}")
+            
+            # Format as integer if whole number
             if total_score.is_integer():
                 total_score = int(total_score)
             else:
                 total_score = round(total_score, 1)
             
-            # 3. REPLACE THE HEADER SCORE (FLEXIBLE MATCH)
-            # Looks for "SCORE", optional spaces, colon, score, "/100"
-            # Works for: "# SCORE: 85/100", "# 📝 SCORE : 85 / 100", etc.
-            header_pattern = r"(SCORE\s*:\s*)([\d\.]+)(\s*/\s*100)"
+            # Replace the header score - more flexible pattern
+            header_pattern = r"(#\s*[🔍📝]?\s*SCORE\s*:\s*)([\d\.]+)(\s*/\s*100)"
             
             if re.search(header_pattern, text, re.IGNORECASE):
                 text = re.sub(
                     header_pattern, 
-                    f"\\1{total_score}\\3", 
+                    f"\\g<1>{total_score}\\g<3>", 
                     text, 
                     count=1,
                     flags=re.IGNORECASE
                 )
+                print(f"DEBUG: Updated header to {total_score}/100")
+            else:
+                print("DEBUG: Could not find score header to update")
+        else:
+            print("DEBUG: No section scores found - pattern may not match")
+            
     except Exception as e:
-        print(f"Error recalculating score: {e}")
+        print(f"ERROR in recalculate_total_score: {e}")
+        import traceback
+        traceback.print_exc()
+    
     return text
 
 def parse_feedback_for_csv(text):
