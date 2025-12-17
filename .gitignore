@@ -1,0 +1,12 @@
+# --- Security (API Keys) ---
+.streamlit/secrets.toml
+.env
+api_key.txt
+
+# --- Python ---
+__pycache__/
+*.pyc
+
+# --- Mac/Windows Junk ---
+.DS_Store
+Thumbs.db
