@@ -431,28 +431,43 @@ def clean_hidden_math(text):
 
 def recalculate_total_score(text):
     try:
-        # 1. Find all section scores (Robust Regex)
-        # Matches "1. Formatting: 9.5/10" with or without bolding (**)
-        pattern = r"\d+\.\s+.*?\s*:\s+([\d\.]+)/10"
-        matches = re.findall(pattern, text, re.IGNORECASE)
+        # 1. ROBUST SECTION FINDER
+        # Pattern logic:
+        # \d+\.      -> Starts with a number and dot (e.g., "1.")
+        # .+?        -> Matches ANYTHING (letters, *, spaces, brackets) lazily
+        # :          -> Stops at the colon
+        # \s* -> Optional whitespace
+        # ([\d\.]+)  -> Captures the score (e.g., "9.5")
+        # \s*/\s*10  -> Matches "/10" or "/ 10"
+        pattern = r"\d+\..+?:\s*([\d\.]+)\s*/\s*10"
+        matches = re.findall(pattern, text)
         
+        # Debugging: Uncomment to see what it finds in your logs
+        # print(f"Found scores: {matches}")
+
         if matches:
-            # 2. Sum the scores
+            # 2. SUM THE SCORES
             total_score = sum(float(m) for m in matches)
+            
+            # Format as integer if possible (e.g., 90.0 -> 90)
             if total_score.is_integer():
                 total_score = int(total_score)
             else:
                 total_score = round(total_score, 1)
             
-            # 3. Replace the Header Score
-            # Matches "# 📝 SCORE:" OR "# 🔍 SCORE:" OR "# SCORE:"
-            # Replaces only the number part, preserving the rest
-            text = re.sub(
-                r"(#\s*[🔍📝]?\s*SCORE:\s*)[\d\.]+(/100)", 
-                f"\\1{total_score}\\2", 
-                text, 
-                count=1
-            )
+            # 3. REPLACE THE HEADER SCORE (FLEXIBLE MATCH)
+            # Looks for "SCORE", optional spaces, colon, score, "/100"
+            # Works for: "# SCORE: 85/100", "# 📝 SCORE : 85 / 100", etc.
+            header_pattern = r"(SCORE\s*:\s*)([\d\.]+)(\s*/\s*100)"
+            
+            if re.search(header_pattern, text, re.IGNORECASE):
+                text = re.sub(
+                    header_pattern, 
+                    f"\\1{total_score}\\3", 
+                    text, 
+                    count=1,
+                    flags=re.IGNORECASE
+                )
     except Exception as e:
         print(f"Error recalculating score: {e}")
     return text
