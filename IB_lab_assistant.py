@@ -498,6 +498,39 @@ def parse_feedback_for_csv(text):
         data[f"{col_name} Feedback"] = cleaned_feedback
     return data
 
+def audit_score_with_ai(client, feedback_text):
+    """
+    Uses a second AI call to strictly parse and sum the section scores.
+    """
+    try:
+        response = client.messages.create(
+            model="claude-sonnet-4-20250514", # Or your preferred model
+            max_tokens=50,
+            temperature=0,
+            system="You are a math auditor. Your ONLY job is to extract section scores from text and sum them.",
+            messages=[
+                {"role": "user", "content": f"""
+                Read the following grading feedback. 
+                1. Identify every section score (out of 10).
+                2. Sum them up to get the true total.
+                3. Return ONLY the final integer number (e.g., 85). Do not write any other text.
+
+                FEEDBACK TO AUDIT:
+                {feedback_text}
+                """}
+            ]
+        )
+        # Extract the number from the response
+        true_total = response.content[0].text.strip()
+        # Ensure we only got digits
+        if true_total.isdigit():
+            return int(true_total)
+        else:
+            return None
+    except Exception as e:
+        print(f"Math Audit Error: {e}")
+        return None
+
 # --- NEW FUNCTION: AUTOSAVE INDIVIDUAL REPORT ---
 def autosave_report(item, autosave_dir):
     """Save individual report as Word doc and append to CSV immediately after grading."""
