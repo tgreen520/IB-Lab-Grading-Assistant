@@ -116,6 +116,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 
 9. EVALUATION (10 pts) [STRICT QUALITY GATES]:
 - REQUIREMENT: List errors + Specific Directional Impact + Specific Improvement.
+- ERROR CLASSIFICATION: Must differentiate between systematic and random errors. (Not done: -0.5).
 - IMPACT SCORING:
   * Impact defined for 100% of errors = 2 pts.
   * Impact defined for SOME (not all) errors = 1 pt (Deduct 1.0).
@@ -208,18 +209,21 @@ STUDENT: [Filename]
 
 <<<MATH: ...>>>
 **1. FORMATTING: [Score]/10**
-* **✅ Strengths:** [Quote] -> [Rubric Reference] -> [Scientific Value]
-* **⚠️ Improvements:** [Error] -> [Rubric Rule] -> [Corrected Example] -> [Reasoning]
+* **✅ Strengths:** [Detailed explanation of tone/voice quality]
+* **⚠️ Improvements:** [**MANDATORY:** "Found [X] subscript errors." (If X=1 or 2, Score **MUST** be 9.5. If X>=3, Score is 9.0 or lower).]
 
 <<<MATH: ...>>>
 **2. INTRODUCTION: [Score]/10**
 * **✅ Strengths:** [Example: "You explicitly stated the objective: 'To determine the activation energy...' (Section 2). This provides a clear focus for the experiment."]
-* **⚠️ Improvements:** [Example: "Error: No background theory. Rule: Section 2 requires 'background theory and balanced equations.' Fix: Add a paragraph explaining Collision Theory and the equation 2H2O2 -> 2H2O + O2."]
+* **⚠️ Improvements:** [Example: "Error: No background theory. Rule: Section 2 requires 'background theory and balanced equations.' Fix: Add a paragraph explaining Collision Theory and the equation 2H2O2 -> 2H2O + O2." [**CRITICAL CHECKS:** * "Objective explicit?" (-1.0 if No, -0.5 if Vague). * "Chemical Equation present?" (-1.0 if No). * "Background thoroughly explained?" (-1.0 if No, -0.5 if Brief or not connected to objective). NOTE: Do not penalize citation context or unit consistency.]]
 
 <<<MATH: ...>>>
 **3. HYPOTHESIS: [Score]/10**
-* **✅ Strengths:** [Quote specific prediction and justification.]
-* **⚠️ Improvements:** [Check Units/Method. If missing, explain WHY units are needed for replication.]
+* **✅ Strengths:** [Quote prediction and praise the scientific reasoning]
+* **⚠️ Improvements:** [**CRITICAL CHECKS:**
+* "Justification: [Present/Missing/Vague]" (-2.0 if missing, -1.0 if vague/incomplete).
+* "Units for IV/DV: [Present/Missing]" (-1.0 if missing, -0.5 if partial).
+* "DV Measurement Description: [Specific/Vague/Missing]" (-1.0 if missing, -0.5 if vague).]
 
 <<<MATH: ...>>>
 **4. VARIABLES: [Score]/10**
@@ -238,18 +242,29 @@ STUDENT: [Filename]
 
 <<<MATH: ...>>>
 **7. DATA ANALYSIS: [Score]/10**
-* **✅ Strengths:** [Quote correct calculation logic.]
-* **⚠️ Improvements:** [Check Propagation. Explain why IB requires Percentage Uncertainty.]
+* **✅ Strengths:** [Summarize the calculation process. If Graph is perfect, mention that the scatterplot, equation, and labels are all correct here.]
+* **⚠️ Improvements:** [**GRAPH AUDIT:** "Trendline Equation: [Present/Missing]" (-1.0 if missing). "R² Value: [Present/Missing]" (-1.0 if missing). Propagation of uncertainty in measurements and calculations. [Present/Missing]" (-2.0 if missing. -1.0 if partial or incorrect.]
+**CALCULATION AUDIT:** "Example calculations were [Clear/Unclear]." (If unclear, -1.0 pts). "Calculation steps were [Clearly Explained/Not Labeled or Explained]." (If not labeled/explained, -0.5 pts).]
 
 <<<MATH: ...>>>
 **8. CONCLUSION: [Score]/10**
-* **✅ Strengths:** [Quote link to theory.]
-* **⚠️ Improvements:** [Check Lit Comparison. Explain why comparing to accepted values validates the result.]
+* **✅ Strengths:** [Quote data used to support the claim]
+* **⚠️ Improvements:** [**CRITICAL CHECKS:** Summarize missing elements naturally. Ensure you comment on:
+  1. **Hypothesis Support** (-1.0 if not stated)
+  2. **Outliers/Omissions** (-1.0 if not addressed, -0.5 if vague)
+  3. IV/DV Relationship (-1.0)
+  4. Chemical Theory (-1.0)
+  5. Quantitative Support (-2.0)
+  6. Qualitative Support (-0.5)
+  7. **Literature Comparison** (-0.5 if vague)
+  8. **R and R² Explanation** (-1.0 if R missing, -1.0 if R² missing, -0.5 if R² vague)]
 
 <<<MATH: ...>>>
 **9. EVALUATION: [Score]/10**
-* **✅ Strengths:** [Quote specific error source.]
-* **⚠️ Improvements:** [Check Impact. Explain that 'Human Error' is too vague and must be specific (e.g., Parallax).]
+* **✅ Strengths:** [**LIST:** "You identified: [Error 1], [Error 2]..." and comment on depth.]
+* **⚠️ Improvements:** [**ERROR CLASSIFICATION:** "You did not differentiate between systematic and random errors. (-0.5 pt)" OR "You successfully distinguished systematic from random errors."
+**IMPACT/IMPROVEMENT AUDIT:** * "You listed [X] errors but only provided specific directional impacts for [Y] of them. (-1 pt)"
+  * "Improvements were listed but were slightly vague (e.g., did not name specific equipment). (-0.5 pt)" ]
 
 <<<MATH: ...>>>
 **10. REFERENCES: [Score]/10**
