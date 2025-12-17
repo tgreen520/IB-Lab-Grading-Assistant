@@ -431,7 +431,7 @@ def clean_hidden_math(text):
 
 def recalculate_total_score(text):
     try:
-        pattern = r"\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10"
+        pattern = r"\*\*\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10\*\*"
         matches = re.findall(pattern, text, re.IGNORECASE)
         if matches:
             total_score = sum(float(m) for m in matches)
