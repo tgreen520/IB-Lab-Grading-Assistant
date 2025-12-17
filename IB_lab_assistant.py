@@ -433,7 +433,7 @@ def recalculate_total_score(text):
     try:
         # 1. Find all section scores (Robust Regex)
         # Matches "1. Formatting: 9.5/10" with or without bolding (**)
-        pattern = r"\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10"
+        pattern = r"\d+\.\s+.*?\s*:\s+([\d\.]+)/10"
         matches = re.findall(pattern, text, re.IGNORECASE)
         
         if matches:
