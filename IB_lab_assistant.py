@@ -59,8 +59,6 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Description of control variables vague: -1.0
   * Independent variable not thoroughly explained: -1.0
   * Dependent variable not thoroughly explained: -1.0
-  * Do not deduct points for multiple independent variables. 
-  * Do not deduct for dependent variables that are derived units. 
   * DV measurement vague: -0.5
 
 5. PROCEDURES & MATERIALS (10 pts):
@@ -501,6 +499,9 @@ def grade_submission(file, model_id):
         "   - **Uncertainty Impact:** CHECK BOTH SECTIONS (Conclusion & Evaluation). If discussed in either -> NO DEDUCTION. Only deduct if missing from BOTH.\n"
         "   - **Literature Comparison:** Check if they compared data to published literature. If NO -> Deduct 1.0 pt.\n"
         "   - **Theory:** If mentioned but explanation is incomplete -> Deduct 1.0 pt. If completely missing -> Deduct 2.0 pts.\n"
+        "4. **VARIABLES (Section 4):**\n"
+        "   - **Derived Independent Variables:** Do NOT deduct points if the student lists multiple Independent Variables where the extra ones are mathematically derived from the main IV (e.g., 'Temperature' and '1/Temperature', or 'Concentration' and 'Natural Log of Concentration'). Treat this as a single, valid IV setup.\n"
+        "   - **Derived Dependent Variables:** Do NOT deduct points if the student lists multiple Dependent Variables where the extra ones are mathematically derived from the main IV (e.g., 'Temperature' and '1/Temperature', or 'Concentration' and 'Natural Log of Concentration'). Treat this as a single, valid IV setup.\n"
     )
 
     if ext == 'docx':
