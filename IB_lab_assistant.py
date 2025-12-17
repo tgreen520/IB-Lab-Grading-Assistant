@@ -134,6 +134,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * References completely missing: -2.0
   * Citations missing for specific data/images: -1.0
   * STRICT EXCEPTION: Do NOT deduct points for minor formatting errors (e.g. missing italics, wrong comma placement, APA vs MLA). If the link/source is there, give full points.
+"""
 
 # --- 4. SYSTEM PROMPT (UPGRADED FOR THOROUGHNESS) ---
 SYSTEM_PROMPT = """You are an expert IB Chemistry Lab Grader and Educator. 
