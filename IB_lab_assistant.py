@@ -149,7 +149,7 @@ Your goal is not just to grade, but to **teach** the student how to improve by r
 3.  **"Experiment" vs "Investigation":** Use these interchangeably.
 
 ### 🧪 YOUR OUTPUT FORMATTING (SCIENTIFIC):
-1.  **USE UNICODE CHARACTERS:** Even if the student's text looks flat ('cm3'), YOUR feedback must use proper symbols.
+1.  **USE PROPER CHARACTERS:** Even if the student's text looks flat ('cm3'), YOUR feedback must use proper symbols.
     * *Bad:* cm^3, dm^-3, CO_2
     * *Good:* cm³, dm⁻³, CO₂, 10⁵, ±0.05
     * *Common Symbols:* ⁰ ¹ ² ³ ⁴ ⁵ ⁶ ⁷ ⁸ ⁹ ⁺ ⁻ ₀ ₁ ₂ ₃ ₄ ₅ ₆ ₇ ₈ ₉
