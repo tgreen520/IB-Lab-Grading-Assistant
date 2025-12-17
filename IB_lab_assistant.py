@@ -432,7 +432,7 @@ def clean_hidden_math(text):
 def recalculate_total_score(text):
     try:
         # 1. Find all section scores (Robust Regex)
-        # Looks for: "1. SECTION NAME: 9.5/10" (Ignores asterisks/bolding for safety)
+        # Matches "1. Formatting: 9.5/10" with or without bolding (**)
         pattern = r"\d+\.\s+[A-Za-z\s&]+:\s+([\d\.]+)/10"
         matches = re.findall(pattern, text, re.IGNORECASE)
         
@@ -445,7 +445,8 @@ def recalculate_total_score(text):
                 total_score = round(total_score, 1)
             
             # 3. Replace the Header Score
-            # Matches "# 📝 SCORE:" OR "# 🔍 SCORE:" to be safe
+            # Matches "# 📝 SCORE:" OR "# 🔍 SCORE:" OR "# SCORE:"
+            # Replaces only the number part, preserving the rest
             text = re.sub(
                 r"(#\s*[🔍📝]?\s*SCORE:\s*)[\d\.]+(/100)", 
                 f"\\1{total_score}\\2", 
