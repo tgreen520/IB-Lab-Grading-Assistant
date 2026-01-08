@@ -26,7 +26,7 @@ else:
     st.info("On Streamlit Cloud, add your key to the 'Secrets' settings.")
     st.stop()
 
-# --- 3. HARDCODED RUBRIC (UPDATED FOR IB CHEMISTRY STANDARDS) ---
+# --- 3. HARDCODED RUBRIC (UPDATED FOR STRICTER IB CHEMISTRY STANDARDS) ---
 IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 
 1. FORMATTING (10 pts):
@@ -36,6 +36,11 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 2. INTRODUCTION (10 pts):
 - Criteria: Clear objective, background theory, balanced equations.
 - OBJECTIVE: Must be explicit. If missing, -1.0 pt.
+- THEORY (STRICTER SCORING): 
+  * Must explain the specific chemical theory behind the lab objective in depth.
+  * Explained fully and linked to objective: 0 deduction.
+  * Discussed but generic/incomplete explanation: -2.0 pts.
+  * Completely missing: -3.0 pts.
 
 3. HYPOTHESIS (10 pts):
 - Criteria: Specific prediction with scientific justification.
@@ -50,19 +55,16 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 4. VARIABLES (10 pts):
 - Criteria: IV, DV, 3+ Controls.
 - SCORING: 
-  * 10/10: All defined + explanations.
-  * 9.5/10: DV measurement vague (-0.5).
-  * 9.0/10: Explanations missing (-1.0).
+  * 10/10: All defined + explanations + units.
   - DEDUCTIONS:
   * Control variables missing (fewer than 3): -4.0
   * EXCEPTION: If the student lists specific instances (e.g. "Mass of Zinc", "Mass of Mg") as multiple IVs, do NOT deduct 4 points. Deduct ONLY 1.0 point for "Categorization Error".
-  * Control variables not justified: -1.0
-  * Description of control variables vague: -1.0
-  * Independent variable not thoroughly explained: -1.0
-  * Dependent variable not thoroughly explained: -1.0
+  * Control variables not justified/explained: -2.0 pts.
+  * Independent variable not thoroughly explained: -1.0 pt.
+  * Dependent variable not thoroughly explained: -1.0 pt.
+  * Units missing for IV or DV: -0.5 pts.
   * Do not deduct points for multiple independent variables if they are derived (e.g. Temp vs 1/Temp).
   * Do not deduct for dependent variables that are derived units. 
-  * DV measurement vague: -0.5
 
 5. PROCEDURES & MATERIALS (10 pts):
 - Criteria: Numbered steps, quantities, safety, diagram.
@@ -78,30 +80,40 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 6. RAW DATA (10 pts):
 - Criteria: Qualitative observations, tables, units, sig figs.
 - REQUIREMENT: Uncertainties must be reported in Data Tables (headers or cells).
+- DEDUCTIONS:
+  * Missing unit uncertainties in column headers: -1.0 pt.
+  * Partially included or partially correct unit uncertainties in headers: -0.5 pts.
+  * Inconsistent use of significant figures: -0.5 pts.
 
 7. DATA ANALYSIS (10 pts):
 - UNCERTAINTY PROPAGATION (IB CHEMISTRY STANDARD):
   * MUST use Absolute Uncertainty (for + / -) and Percentage Uncertainty (for * / /).
-  * NOTE: Intermediate steps are NOT required. Do NOT deduct for missing intermediate steps if the result is correct.
   * **SCORING:**
-    - **Attempted (Partial):** Any calculation (e.g., standard deviation, range) OR propagation attempted, even if incomplete/incorrect: -1.0 pt.
+    - **Attempted (Partial):** Any calculation OR propagation attempted, even if incomplete/incorrect: -1.0 pt.
     - **Missing:** No attempt at calculation or propagation: -2.0 pts.
 - GRAPHS (Bar or Scatter allowed based on context):
-  * Graph Missing: -2.0 pts. (NOTE: If Graph is missing, do NOT deduct for missing axis labels or missing averages. Max deduction is -2.0).
-  * Graph Present but Axis labels/Units missing: -1.0 pt.
+  * Graph Missing: -2.0 pts. 
+  * Axis labels missing: -1.0 pt.
+  * Trendline Missing: -1.0 pt.
+  * Trendline Equation Missing: -1.0 pt.
+  * R² Value Missing on Graph: -1.0 pt.
+  * **Spectrophotometry Specific:** If this is a spectrophotometry lab, missing absorbance graph: -1.0 pt.
   * MULTIPLE TRIALS RULE: If >1 trial performed, graph MUST show AVERAGES. (If missing: -2.0 pts).
-  * SCATTER PLOT REQ: Trendline, Equation, R^2 (if applicable). 
-  * BAR GRAPH REQ: Average values shown.
 
 8. CONCLUSION (10 pts) [STRICT DEDUCTIONS]:
-- UNCERTAINTY IMPACT (CROSS-CHECK EVALUATION): 
-  * Check BOTH Conclusion and Evaluation.
-  * **Full Discussion:** Impact on data explained in either section: 0 deduction.
-  * **Partial Discussion:** Uncertainty mentioned (in Conc or Eval), but specific impact on data is NOT explained: -1.0 pt.
-  * **Missing:** No mention of uncertainty in Conclusion OR Evaluation: -2.0 pts.
+- HYPOTHESIS SUPPORT:
+  * Must specifically state if data supports or refutes hypothesis using quantitative/qualitative data.
+  * If missing or vague: -1.0 pt.
+- STATISTICAL ANALYSIS (RELATIONSHIP):
+  * Must use BOTH Coefficient of Determination (R²) AND Correlation Coefficient (r) to discuss the relationship.
+  * Missing "r" discussion: -1.0 pt.
+  * Missing "R²" discussion: -1.0 pt.
 - LITERATURE COMPARISON:
-  * Must compare results to published literature/accepted values to support or refute findings.
+  * Must compare results to published literature/accepted values.
   * If missing: -1.0 pt.
+- UNCERTAINTY IMPACT (CROSS-CHECK EVALUATION): 
+  * **Full Discussion:** Impact on data explained in either section: 0 deduction.
+  * **Partial/Missing:** See Evaluation section logic, but ensure it is discussed somewhere.
 - IV/DV RELATIONSHIP: Must explain graph trend. (If poor: -1.0)
 - THEORY: Connect to chemical theory.
   * Explained fully: 0 deduction.
@@ -109,18 +121,17 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Completely missing: -2.0 pts.
 - QUANTITATIVE SUPPORT: 
   * Must cite collected raw data specific numbers.
-  * If only DERIVED data (averages, rates, R^2) is discussed but collected data is missing: -1.0 pt.
   * If NO quantitative data (neither derived nor collected) is cited: -2.0 pts.
 - QUALITATIVE SUPPORT: Must cite observations. (If missing: -0.5)
-- STATISTICS: Explain R and R^2 (if Scatter used). (If missing: -2.0. If partially explained: -1.0)
 
 9. EVALUATION (10 pts) [STRICT QUALITY GATES]:
 - REQUIREMENT: List errors + Specific Directional Impact + Specific Improvement.
 - ERROR CLASSIFICATION: Must differentiate between systematic and random errors. (Not done: -0.5).
-- IMPACT SCORING:
-  * Impact defined for 100% of errors = 2 pts.
-  * Impact defined for SOME (not all) errors = 1 pt (Deduct 1.0).
-  * No impact defined = 0 pts (Deduct 2.0).
+- IMPACT SCORING (STRICT):
+  * Must specifically address how EACH random and systematic error affects the measured data.
+  * Impact defined for all errors: 0 deduction.
+  * Impact partially addressed: -1.0 pt.
+  * Impact NOT addressed: -2.0 pts.
 - IMPROVEMENT SCORING:
   * Specific equipment named = 2 pts.
   * Vague ("use better scale") = 1.5 pts (Deduct 0.5).
@@ -129,11 +140,11 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 10. REFERENCES (10 pts):
 - Criteria: Citations present for all external data/images.
 - SCORING:
-  * 10/10: References are present (any style).
-  - DEDUCTIONS:
-  * References completely missing: -2.0
-  * Citations missing for specific data/images: -1.0
-  * STRICT EXCEPTION: Do NOT deduct points for minor formatting errors (e.g. missing italics, wrong comma placement, APA vs MLA). If the link/source is there, give full points.
+  * 0 References provided: Score 0/10 (Deduct 10 pts).
+  * Only 1 relevant source provided: Deduct 5.0 pts.
+  * Only 2 relevant sources provided: Deduct 3.0 pts.
+  * 3+ relevant sources provided: 0 deduction (Full points if formatted correctly).
+  * Minor APA formatting errors: Deduct 1.0 pt.
 """
 
 # --- 4. SYSTEM PROMPT (UPGRADED FOR THOROUGHNESS) ---
@@ -199,22 +210,27 @@ Your goal is not just to grade, but to **teach** the student how to improve by r
 2.  **HYPOTHESIS (Section 3) - SPECIFICITY & UNITS:**
     * **Check for Units:** Did they state the units for the IV and DV? (e.g., "Temperature (°C)"). If missing -> **Deduct 0.5**.
     * **Check Measurement Method:** Did they say *how* they will measure the DV? (e.g., "using a stopwatch"). If vague or missing -> **Deduct 1.0**.
+    
+3.  **VARIABLES (Section 4) - JUSTIFICATION:**
+    * **Check Justification:** Did they explain WHY the controls must be kept constant? If missing -> **Deduct 2.0**.
+    * **IV/DV Explanation:** If inadequate -> **Deduct 1.0 each**.
 
-3.  **MATERIALS (Section 5) - UNCERTAINTY LOCATION:**
-    * **Check Materials List:** Are uncertainties listed (e.g., ±0.05)? If YES -> **0 Deduction**.
-    * **Check Data Section:** If missing in Materials, are they in the Data Tables?
-        * YES (In Data, Missing in Materials) -> **Deduct 0.5**.
-        * NO (Missing Everywhere) -> **Deduct 1.0**.
+4.  **DATA ANALYSIS (Section 7) - TRENDLINE & R²:**
+    * **Check Trendline:** Missing on graph? -> **Deduct 1.0**.
+    * **Check Equation:** Missing equation? -> **Deduct 1.0**.
+    * **Check R²:** Missing R² value on graph? -> **Deduct 1.0**.
+    * **Check Axes:** Missing labels? -> **Deduct 1.0**.
 
-4.  **DATA ANALYSIS (Section 7) - UNCERTAINTY ATTEMPT RULE:**
-    * **Attempted:** If there is ANY uncertainty math (e.g., they listed instrument error, calculated standard deviation, OR tried to propagate), but it is incomplete/incorrect -> **Deduct 1.0**.
-    * **Missing:** Only deduct **2.0** if there is ABSOLUTELY NO uncertainty calculation or propagation found.
+5.  **CONCLUSION (Section 8) - STATISTICS & LITERATURE:**
+    * **Check R and R²:** Did they discuss BOTH R (correlation) and R² (determination)? If one missing -> **Deduct 1.0**.
+    * **Check Literature:** Is there a comparison to accepted values? If missing -> **Deduct 1.0**.
 
-5.  **CONCLUSION (Section 8) - CROSS-CHECK LOGIC:**
-    * **Uncertainty Impact:** Check BOTH Conclusion and Evaluation.
-        * **Discussion + Specific Impact Explained:** 0 Deduction.
-        * **Discussion Present + Impact Missing:** If they mention uncertainty in either section, but fail to explain the specific impact on the data -> **Deduct 1.0**.
-        * **No Discussion:** If NO mention of uncertainty in EITHER section -> **Deduct 2.0**.
+6.  **REFERENCES (Section 10) - SOURCE COUNT:**
+    * Count the sources.
+    * 0 Sources -> **Score 0/10**.
+    * 1 Source -> **Deduct 5.0**.
+    * 2 Sources -> **Deduct 3.0**.
+    * Formatting errors -> **Deduct 1.0**.
 
 ### OUTPUT FORMAT (STRICTLY FOLLOW THIS STRUCTURE):
 
@@ -235,20 +251,23 @@ STUDENT: [Filename]
 <<<MATH: ...>>>
 **2. INTRODUCTION: [Score]/10**
 * **✅ Strengths:** [Example: "You explicitly stated the objective: \"To determine the activation energy...\" (Section 2). This provides a clear focus for the experiment."]
-* **⚠️ Improvements:** [Example: "Error: No background theory. Rule: Section 2 requires \"background theory and balanced equations.\" Fix: Add a paragraph explaining Collision Theory and the equation 2H2O2 -> 2H2O + O2." [**CRITICAL CHECKS:** * "Objective explicit?" (-1.0 if No, -0.5 if Vague). * "Chemical Equation present?" (-1.0 if No). * "Background thoroughly explained?" (-1.0 if No, -0.5 if Brief or not connected to objective). NOTE: Do not penalize citation context or unit consistency.]]
+* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Objective explicit?" (-1.0 if No). * "Chemical Equation present?" (-1.0 if No). * "Theory depth?" (-2.0 if generic/incomplete, -3.0 if missing). Ensure theory explains the chemistry behind the objective.]
 
 <<<MATH: ...>>>
 **3. HYPOTHESIS: [Score]/10**
 * **✅ Strengths:** [Quote prediction and praise the scientific reasoning]
 * **⚠️ Improvements:** [**CRITICAL CHECKS:**
 * "Justification: [Present/Missing/Vague]" (-2.0 if missing, -1.0 if vague/incomplete).
-* "Units for IV/DV: [Present/Missing]" (-1.0 if missing, -0.5 if partial).
+* "Units for IV/DV: [Present/Missing]" (-0.5 if missing).
 * "DV Measurement Description: [Specific/Vague/Missing]" (-1.0 if missing, -0.5 if vague).]
 
 <<<MATH: ...>>>
 **4. VARIABLES: [Score]/10**
 * **✅ Strengths:** [Quote a well-controlled variable.]
-* **⚠️ Improvements:** [Check Explanations. If missing, explain WHY that variable affects the reaction.]
+* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Control Justification?" (-2.0 if missing). 
+* "IV Explanation?" (-1.0 if inadequate). 
+* "DV Explanation?" (-1.0 if inadequate).
+* "Units Included?" (-0.5 if missing).]
 
 <<<MATH: ...>>>
 **5. PROCEDURES & MATERIALS: [Score]/10**
@@ -258,38 +277,37 @@ STUDENT: [Filename]
 <<<MATH: ...>>>
 **6. RAW DATA: [Score]/10**
 * **✅ Strengths:** [Quote qualitative observations.]
-* **⚠️ Improvements:** [Check Sig Figs. Explain why precision must match uncertainty.]
+* **⚠️ Improvements:** [**CRITICAL CHECKS:**
+* "Header Uncertainties?" (-1.0 if missing, -0.5 if partial).
+* "Sig Fig Consistency?" (-0.5 if inconsistent).]
 
 <<<MATH: ...>>>
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [Summarize the calculation process. If Graph is perfect, mention that the scatterplot, equation, and labels are all correct here.]
-* **⚠️ Improvements:** [**GRAPH AUDIT:** "Trendline Equation: [Present/Missing]" (-1.0 if missing). "R² Value: [Present/Missing]" (-1.0 if missing). Propagation of uncertainty in measurements and calculations. [Present/Missing]" (-2.0 if missing. -1.0 if partial or incorrect.]
-**CALCULATION AUDIT:** "Example calculations were [Clear/Unclear]." (If unclear, -1.0 pts). "Calculation steps were [Clearly Explained/Not Labeled or Explained]." (If not labeled/explained, -0.5 pts).]
+* **⚠️ Improvements:** [**GRAPH AUDIT:** "Trendline: [Present/Missing]" (-1.0). "Equation: [Present/Missing]" (-1.0). "R² Value: [Present/Missing]" (-1.0). "Axis Labels: [Present/Missing]" (-1.0). "Spectrophotometry Absorbance Graph?" (-1.0 if applicable and missing).]
 
 <<<MATH: ...>>>
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [Quote data used to support the claim]
 * **⚠️ Improvements:** [**CRITICAL CHECKS:** Summarize missing elements naturally. Ensure you comment on:
-  1. **Hypothesis Support** (-1.0 if not stated)
-  2. **Outliers/Omissions** (-1.0 if not addressed, -0.5 if vague)
-  3. IV/DV Relationship (-1.0)
-  4. Chemical Theory (-1.0)
-  5. Quantitative Support (-2.0)
-  6. Qualitative Support (-0.5)
-  7. **Literature Comparison** (-0.5 if vague)
-  8. **R and R² Explanation** (-1.0 if R missing, -1.0 if R² missing, -0.5 if R² vague)]
+  1. **Hypothesis Support** (Must be specific. -1.0 if vague).
+  2. **Literature Comparison** (-1.0 if missing).
+  3. **Stats Discussion:** Must discuss BOTH R and R². (-1.0 if R missing, -1.0 if R² missing).
+  4. **Quantitative Support** (-2.0 if missing).
+  5. **Qualitative Support** (-0.5 if missing).]
 
 <<<MATH: ...>>>
 **9. EVALUATION: [Score]/10**
 * **✅ Strengths:** [**LIST:** "You identified: [Error 1], [Error 2]..." and comment on depth.]
-* **⚠️ Improvements:** [**ERROR CLASSIFICATION:** "You did not differentiate between systematic and random errors. (-0.5 pt)" OR "You successfully distinguished systematic from random errors."
-**IMPACT/IMPROVEMENT AUDIT:** * "You listed [X] errors but only provided specific directional impacts for [Y] of them. (-1 pt)"
-  * "Improvements were listed but were slightly vague (e.g., did not name specific equipment). (-0.5 pt)" ]
+* **⚠️ Improvements:** [**IMPACT AUDIT:** "Did you address how EACH error affects the data?" (-2.0 if missing, -1.0 if partial). "Improvements?" (Vague = -0.5).]
 
 <<<MATH: ...>>>
 **10. REFERENCES: [Score]/10**
 * **✅ Strengths:** [Comment on source credibility.]
-* **⚠️ Improvements:** [Formatting check.]
+* **⚠️ Improvements:** [**SOURCE COUNT CHECK:** * 0 Sources = Score 0. 
+* 1 Source = Deduct 5. 
+* 2 Sources = Deduct 3. 
+* Formatting errors = Deduct 1.]
 
 **💡 TOP 3 EDUCATIONAL PRIORITIES:**
 1.  [Specific concept to review, e.g., "Review Propagation of Uncertainty formulas"]
@@ -308,9 +326,6 @@ if 'autosave_dir' not in st.session_state:
     st.session_state.autosave_dir = "autosave_feedback_ib"
 
 client = anthropic.Anthropic(api_key=API_KEY)
-
-# --- CREATE AUTOSAVE DIRECTORY ---
-os.makedirs(st.session_state.autosave_dir, exist_ok=True)
 
 # --- 5. HELPER FUNCTIONS ---
 def encode_file(uploaded_file):
@@ -437,14 +452,6 @@ def recalculate_total_score(text):
     try:
         # 1. ROBUST PATTERN: 
         # Matches: "1. SECTION NAME: [**]9.5[**]/10"
-        # \d+\.      -> Matches "1."
-        # .+?        -> Matches "FORMATTING"
-        # :          -> Matches ":"
-        # [^0-9\n]*? -> Matches any non-number junk (whitespace, **, etc.)
-        # (\d+\.?\d*) -> CAPTURE GROUP: Matches the number (e.g. "9" or "9.5")
-        # [^0-9\n]*? -> Matches junk after number
-        # /          -> Matches "/"
-        # \s*10      -> Matches "10"
         pattern = r"\d+\..+?:[^0-9\n]*?(\d+\.?\d*)[^0-9\n]*?/\s*10"
         
         matches = re.findall(pattern, text)
@@ -461,7 +468,6 @@ def recalculate_total_score(text):
             # 2. SANITY CHECK: expected 10 sections
             if len(scores) != 10:
                 print(f"DEBUG: Warning - Found {len(scores)} section scores (expected 10).")
-                # We proceed anyway, but this usually implies a parsing miss
             
             total_score = sum(scores)
             
@@ -555,6 +561,10 @@ def audit_score_with_ai(client, feedback_text):
 def autosave_report(item, autosave_dir):
     """Save individual report as Word doc and append to CSV immediately after grading."""
     try:
+        # --- FIX: FORCE FOLDER CREATION ---
+        if not os.path.exists(autosave_dir):
+            os.makedirs(autosave_dir)
+        # ----------------------------------
         # 1. Save Word Document
         doc = Document()
         write_markdown_to_docx(doc, item['Feedback'])
