@@ -59,7 +59,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   - DEDUCTIONS:
   * Control variables missing (fewer than 3): -4.0
   * EXCEPTION: If the student lists specific instances (e.g. "Mass of Zinc", "Mass of Mg") as multiple IVs, do NOT deduct 4 points. Deduct ONLY 1.0 point for "Categorization Error".
-  * Control variables not justified/explained: -2.0 pts.
+  * Control variables not justified: -2.0 pts.
   * Independent variable not thoroughly explained: -1.0 pt.
   * Dependent variable not thoroughly explained: -1.0 pt.
   * Units missing for IV or DV: -0.5 pts.
@@ -236,8 +236,8 @@ Your goal is not just to grade, but to **teach** the student how to improve by r
 
 4.  VARIABLES (Section 4) - JUSTIFICATION PROTOCOL:
     * **Accuracy Check (NEW):** * **Swapped/Wrong Variables:** Did they list the IV as the DV (or vice versa)? Or did they list a constant as a variable? -> **-1.0 point.**
-    * **Control Justification:** * No justification given for why controls were chosen? -> -1.0.
-        * Partial/Vague justification? -> -0.5.
+    * **Control Justification:** * No justification given for why controls were chosen? -> -2.0.
+        * Partial/Vague justification? -> -1.0.
     * **DV Measurement:** Method for measuring DV is vague? -> -0.5.
     * **Identification (Missing Items):** Control variables missing? -> -1.0 per missing item. IV missing? -> -2.0. DV missing? -> -2.0.
 
