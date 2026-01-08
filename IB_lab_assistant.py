@@ -26,7 +26,7 @@ else:
     st.info("On Streamlit Cloud, add your key to the 'Secrets' settings.")
     st.stop()
 
-# --- 3. HARDCODED RUBRIC (UPDATED FOR DRACONIAN GRADING - ALL SECTIONS) ---
+# --- 3. HARDCODED RUBRIC (UPDATED FOR MAXIMUM STRICTNESS) ---
 IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 
 1. FORMATTING (10 pts):
@@ -41,11 +41,12 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 2. INTRODUCTION (10 pts):
 - Criteria: Clear objective, background theory, balanced equations.
 - OBJECTIVE: Must be explicit. If missing, -1.0 pt.
-- THEORY (STRICTER SCORING): 
+- THEORY (ALL OR NOTHING DEPTH): 
+  * **Requirement:** Must explain **ALL** relevant chemical theory related to the lab objective.
   * **The "Chemist Test":** The background must provide sufficient detail for a chemist who is **unfamiliar with this specific experiment** to understand *exactly* why the reaction works.
   * **Scoring Tiers:**
-    * Detailed & Specific to this experiment: 0 deduction.
-    * **General/Textbook Only:** (e.g., Defines "Enthalpy" but doesn't explain the specific reaction mechanism of the lab): **-2.0 pts (Score 8.0).**
+    * Comprehensive & Linked: Explains all relevant concepts (e.g. Collision Theory + Activation Energy + Order of Reaction) and links them to objective: 0 deduction.
+    * **Incomplete/Generic:** Explains some concepts but misses others, OR defines terms without linking to the specific lab objective: **-2.0 pts (Score 8.0).**
     * Completely missing: -3.0 pts.
 
 3. HYPOTHESIS (10 pts):
@@ -54,9 +55,9 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Units for Independent Variable (IV) and Dependent Variable (DV) must be included.
   * Method of measuring the DV must be explicitly stated.
 - DEDUCTIONS:
-  * **Justification Quality:**
-    * Full, scientific reasoning: 0 deduction.
-    * **Partial/Weak Justification:** (e.g., Correct trend predicted, but reasoning is shallow or incomplete): **-1.5 pts.**
+  * **Justification Quality (FULL REQUIREMENT):**
+    * **Full:** Explains the *scientific mechanism* connecting IV and DV (e.g. "Increasing Temp increases KE, leading to more frequent collisions...").
+    * **Partial/Weak:** Predicts correct trend but justification is shallow or incomplete (e.g. "Reaction will be faster because it's hotter"): **-1.5 pts.**
     * Missing Justification: -2.0 pts.
   * Missing units for IV/DV: -0.5 pts.
   * DV measurement is vague or measurement method is missing: -1.0 pt.
@@ -92,21 +93,20 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Partially included or partially correct unit uncertainties in headers: -0.5 pts.
   * Inconsistent use of significant figures: -0.5 pts.
 
-7. DATA ANALYSIS (10 pts) [STRICT CALCULATION AUDIT]:
-- UNCERTAINTY PROPAGATION (IB CHEMISTRY STANDARD):
+7. DATA ANALYSIS (10 pts) [STRICT CALCULATION & GRAPH AUDIT]:
+- UNCERTAINTY PROPAGATION:
   * MUST use Absolute Uncertainty (for + / -) and Percentage Uncertainty (for * / /).
-  * **SCORING:**
-    - **Method Error:** Using the wrong propagation method (e.g., adding % uncertainty when adding values): **-1.0 pt.**
-    - **Missing Sample Calculation:** No example calculation shown for derived values: **-2.0 pts.**
-    - **Sig Fig Inflation:** Final calculated values have more sig figs than the raw data: **-0.5 pts.**
-- GRAPHS (Bar or Scatter allowed based on context):
-  * **REQUIREMENT:** The following must be present on **ALL** relevant scatter plots.
-  * Graph Missing: -2.0 pts. 
-  * Axis labels missing: -1.0 pt.
-  * Trendline Missing on **any** relevant graph: -1.0 pt.
-  * Trendline Equation Missing on **any** relevant graph: -1.0 pt.
-  * R² Value Missing on **any** relevant graph: -1.0 pt.
-  * MULTIPLE TRIALS RULE: If >1 trial performed, graph MUST show AVERAGES. (If missing: -2.0 pts).
+  * **Method Error:** Using wrong propagation method (e.g. adding % for addition): **-1.0 pt.**
+  * **Missing Sample Calculation:** No example shown: **-2.0 pts.**
+  * **Sig Fig Inflation:** Final value has more sig figs than raw data: **-0.5 pts.**
+- SCATTER PLOTS (ALL GRAPHS MUST COMPLY):
+  * **Trendline Equation:** Missing on **ANY** relevant graph? -> -1.0 pt.
+  * **R² Value:** Missing on **ANY** relevant graph? -> -1.0 pt.
+  * **Trendline:** Missing on **ANY** relevant graph? -> -1.0 pt.
+  * **Axis Labels:** Missing on **ANY** relevant graph? -> -1.0 pt.
+- SPECTROPHOTOMETRY SPECIFIC RULE:
+  * If the lab uses a Spectrophotometer/Colorimeter, an **ABSORBANCE SPECTRUM GRAPH** (Absorbance vs. Wavelength) is **REQUIRED** to justify lambda max.
+  * **DEDUCTION:** If Spectrophotometry lab AND Absorbance Spectrum Graph is missing -> **-1.0 pt.**
 
 8. CONCLUSION (10 pts) [STRICT DEDUCTIONS]:
 - QUANTITATIVE SUPPORT (THE NUMBERS RULE):
@@ -157,20 +157,28 @@ SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner.
 1.  **FORMATTING:** If you see `CO2`, `H2O`, `cm3`, `m2` in the text, these are ERRORS. The student failed to use subscripts/superscripts. 
     * **Action:** If you see 3 or more of these "flat text" errors, you **MUST** deduct 1.0 point. Do not be lenient.
 
-2.  **INTRODUCTION:** If the theory section feels like a generic textbook definition (e.g., defining "Rate of Reaction" broadly) rather than explaining the specific chemistry of *this* experiment, **DEDUCT 2.0 POINTS.** The standard is: "Could a chemist unfamiliar with this lab understand the specific mechanism?"
+2.  **INTRODUCTION:** * **Check:** Does the background explain **ALL** relevant chemical theory related to the objective?
+    * **Penalty:** If the theory is incomplete (e.g., defines one concept but misses the linking mechanism), **DEDUCT 2.0 POINTS.**
+    * **Standard:** "Could a chemist unfamiliar with this lab understand the *entire* chemical justification?"
 
-3.  **VARIABLES:** If the student lists control variables but does **NOT** explicitly explain **WHY** they need to be controlled (e.g., "to prevent side reactions"), **DEDUCT 2.0 POINTS.** Listing them is not enough.
+3.  **HYPOTHESIS:**
+    * **Check:** Does the justification FULLY explain the relationship using chemical principles?
+    * **Penalty:** If the justification is present but shallow (e.g., "rate increases with concentration" without explaining collision frequency), **DEDUCT 1.5 POINTS.**
 
-4.  **CALCULATIONS (Section 7):**
-    * **Sample Calculation:** If the student shows a table of results but NO example calculation of how they got there -> **DEDUCT 2.0 POINTS.**
-    * **Uncertainty Logic:** Check their math. Did they add percentage uncertainties when subtracting values? This is wrong. **DEDUCT 1.0 POINT** for method errors.
-    
+4.  **DATA ANALYSIS (Section 7):**
+    * **Spectrophotometry Trap:** Does the text mention "absorbance", "colorimeter", "spectrophotometer", or "Beer's Law"? 
+        * **YES:** Check for a graph of **Absorbance vs Wavelength** (Spectrum).
+        * **RESULT:** If this specific graph is missing -> **DEDUCT 1.0 POINT.** (This is required to justify lambda max).
+    * **Scatter Plots:** Look at **EVERY** scatter plot.
+        * **Missing Trendline Equation on ANY plot?** -> Deduct 1.0.
+        * **Missing R² on ANY plot?** -> Deduct 1.0.
+
 5.  **CONCLUSION (Section 8):**
     * **The "Numbers" Rule:** If the student says "The hypothesis was supported because the rate increased" but DOES NOT quote the specific start/end values (e.g., "from 0.1 M/s to 0.5 M/s"), **DEDUCT 2.0 POINTS.**
     * **Percent Error:** If they compare to a literature value but don't calculate the % Error -> **DEDUCT 1.0 POINT.**
 
 6.  **EVALUATION (Section 9):**
-    * **The "Human Error" Ban:** If the student lists "Human Error" or "Be more careful" as an improvement -> **DEDUCT 2.0 POINTS.** This is not a valid scientific improvement.
+    * **The "Human Error" Ban:** If the student lists "Human Error" or "Be more careful" as an improvement -> **DEDUCT 2.0 POINTS.**
     * **Directional Impact:** If they list an error (e.g., "Heat loss") but do NOT say if it made the final result HIGHER or LOWER -> **DEDUCT 2.0 POINTS.**
 
 ### 🧪 SCIENTIFIC FORMATTING RULES:
@@ -196,7 +204,7 @@ SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner.
     * **Start at 10.0 Points.**
     * **Objective:** If Missing -> -1.0. If Vague/Implicit -> -0.5.
     * **Chemical Equation:** If Missing -> -1.0.
-    * **Background Theory (STRICT):** * **Generic/Textbook Only:** (Definitions without specific application): **-2.0 pts.**
+    * **Background Theory (STRICT):** * **Incomplete/Generic:** (Explains some but not all relevant concepts, or fails to link to objective): **-2.0 pts.**
         * **Missing/Irrelevant:** **-3.0 pts.**
 
 2.  **CONCLUSION (Section 8) - STRICT MATH PROTOCOL:**
@@ -212,7 +220,7 @@ SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner.
 
 3.  **HYPOTHESIS (Section 3):**
     * **Justification Check:** * Missing? -> -2.0. 
-      * **Partial/Weak?** -> **-1.5.**
+      * **Partial/Weak?** (Fails to fully explain scientific mechanism) -> **-1.5.**
       * Full/Scientific? -> 0 deduction.
     * **Units Check:** Missing -> -1.0. Incomplete -> -0.5.
     * **Measurement Check:** Missing -> -1.0. Vague -> -0.5.
@@ -226,10 +234,11 @@ SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner.
     * **Sample Calculations:** NOT SHOWN? -> **-2.0.**
     * **Uncertainty Propagation:** Wrong method used (e.g. adding % for addition)? -> **-1.0.**
     * **Sig Figs:** Final result has more sig figs than raw data? -> **-0.5.**
-    * **Graphs:**
+    * **Graphs (ALL SCATTER PLOTS):**
         * Trendline Equation Missing on **ANY** graph? -> -1.0.
         * R² Value Missing on **ANY** graph? -> -1.0.
         * Trendline Missing on **ANY** graph? -> -1.0.
+    * **Spectrophotometry Check:** If applicable, is Absorbance Spectrum (Abs vs Wavelength) missing? -> **-1.0.**
 
 6.  **EVALUATION (Section 9) - IMPACT AUDIT:** * **CRITICAL IMPACT AUDIT (THE "DIRECTION" CHECK):**
         * **Step 1:** Count the TOTAL number of errors the student lists.
@@ -263,12 +272,12 @@ STUDENT: [Filename]
 
 **2. INTRODUCTION: [Score]/10**
 * **✅ Strengths:** [Detailed explanation of objective/theory coverage]
-* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Objective explicit?" (-1.0 if No, -0.5 if Vague). * "Chemical Equation present?" (-1.0 if No). * "Background sufficient?" (-2.0 if generic/textbook only). * "Missing/Irrelevant?" (-3.0).]
+* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Objective explicit?" (-1.0 if No, -0.5 if Vague). * "Chemical Equation present?" (-1.0 if No). * "Background theory depth?" (-2.0 if incomplete/generic, -3.0 if missing/irrelevant). Ensure ALL relevant concepts are explained and linked.]
 
 **3. HYPOTHESIS: [Score]/10**
 * **✅ Strengths:** [Quote prediction and praise the scientific reasoning]
 * **⚠️ Improvements:** [**CRITICAL CHECKS:**
-* "Justification: [Present/Missing/Weak]" (-2.0 if missing, -1.5 if partial/weak, -1.0 if vague).
+* "Justification: [Full/Partial/Missing]" (-2.0 if missing, -1.5 if partial/weak, -1.0 if vague).
 * "Units for IV/DV: [Present/Missing]" (-1.0 if missing, -0.5 if partial).
 * "DV Measurement Description: [Specific/Vague/Missing]" (-1.0 if missing, -0.5 if vague).]
 
@@ -287,6 +296,7 @@ STUDENT: [Filename]
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [Summarize the calculation process. If Graph is perfect, mention that the scatterplot, equation, and labels are all correct here.]
 * **⚠️ Improvements:** [**GRAPH AUDIT:** "Trendline: [Present/Missing]" (-1.0). "Equation: [Present/Missing]" (-1.0). "R² Value: [Present/Missing]" (-1.0). Check **ALL** relevant scatter plots.
+**SPECTROPHOTOMETRY CHECK:** "Absorbance Spectrum (Abs vs Wavelength) Graph?" (-1.0 if missing).
 **CALCULATION AUDIT:** "Sample Calculation: [Present/Missing]" (-2.0 if missing). "Uncertainty Propagation Logic: [Correct/Incorrect]" (-1.0 if wrong method used). "Sig Fig Consistency:" (-0.5 if inflated).]
 
 **8. CONCLUSION: [Score]/10**
