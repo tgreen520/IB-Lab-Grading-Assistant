@@ -38,8 +38,9 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 - OBJECTIVE: Must be explicit. If missing, -1.0 pt.
 - THEORY (STRICTER SCORING): 
   * Must explain the specific chemical theory behind the lab objective in depth.
+  * **AUDIENCE STANDARD:** The background must provide sufficient detail for a chemist who is **unfamiliar with this specific experiment** to understand the context and objectives.
   * Explained fully and linked to objective: 0 deduction.
-  * Discussed but generic/incomplete explanation: -2.0 pts.
+  * Discussed but generic/incomplete (not enough context for an outsider): -2.0 pts.
   * Completely missing: -3.0 pts.
 
 3. HYPOTHESIS (10 pts):
@@ -92,11 +93,12 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
     - **Attempted (Partial):** Any calculation OR propagation attempted, even if incomplete/incorrect: -1.0 pt.
     - **Missing:** No attempt at calculation or propagation: -2.0 pts.
 - GRAPHS (Bar or Scatter allowed based on context):
+  * **REQUIREMENT:** The following must be present on **ALL** relevant scatter plots.
   * Graph Missing: -2.0 pts. 
   * Axis labels missing: -1.0 pt.
-  * Trendline Missing: -1.0 pt.
-  * Trendline Equation Missing: -1.0 pt.
-  * R² Value Missing on Graph: -1.0 pt.
+  * Trendline Missing on **any** relevant graph: -1.0 pt.
+  * Trendline Equation Missing on **any** relevant graph: -1.0 pt.
+  * R² Value Missing on **any** relevant graph: -1.0 pt.
   * **Spectrophotometry Specific:** If this is a spectrophotometry lab, missing absorbance graph: -1.0 pt.
   * MULTIPLE TRIALS RULE: If >1 trial performed, graph MUST show AVERAGES. (If missing: -2.0 pts).
 
@@ -210,8 +212,9 @@ Your goal is not just to grade, but to **teach** the student how to improve by r
     * **Start at 10.0 Points.**
     * **Objective:** If Missing -> -1.0. If Vague/Implicit -> -0.5.
     * **Chemical Equation:** If Missing -> -1.0.
-    * **Background Theory (STRICT QUALITY CONTROL):** * **Missing/Irrelevant:** If the theory is missing entirely or purely historical without chemical relevance -> **-3.0 pts.**
-        * **Weak/Superficial:** If the theory is present but acts only as a definition list, is too brief, or fails to explicitly explain *why* the reaction happens (the "Chemical Principles") -> **-2.0 pts.**
+    * **Background Theory (STRICT QUALITY CONTROL):** * **Audience Check:** Does the background provide enough context for a **chemist unfamiliar with this specific experiment**?
+        * **Missing/Irrelevant:** If the theory is missing entirely or purely historical without chemical relevance -> **-3.0 pts.**
+        * **Weak/Superficial:** If the theory is present but assumes prior knowledge of the specific experiment, or is just a definition list -> **-2.0 pts.**
     * **RESTRICTIONS (Do NOT Deduct):** No deductions for citation context or inconsistent units.
 
 2.  **CONCLUSION (Section 8) - STRICT MATH PROTOCOL:**
@@ -242,8 +245,10 @@ Your goal is not just to grade, but to **teach** the student how to improve by r
     * **Identification (Missing Items):** Control variables missing? -> -1.0 per missing item. IV missing? -> -2.0. DV missing? -> -2.0.
 
 5.  **DATA ANALYSIS (Section 7):**
-    * **Trendline Equation:** Not shown on graph? -> -1.0.
-    * **R² Value:** Not shown on graph? -> -1.0.
+    * **ALL GRAPHS CHECK:** You must check **every** scatter plot included in the report.
+    * **Trendline Equation:** Not shown on **ANY** relevant graph? -> -1.0.
+    * **R² Value:** Not shown on **ANY** relevant graph? -> -1.0.
+    * **Trendline:** Not shown on **ANY** relevant graph? -> -1.0.
     * **Calculations:** Example calculations unclear? -> -1.0.
     * **Steps:** Calculation steps not clearly explained OR labeled? -> -0.5.
 
@@ -323,7 +328,7 @@ STUDENT: [Filename]
 
 **2. INTRODUCTION: [Score]/10**
 * **✅ Strengths:** [Detailed explanation of objective/theory coverage]
-* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Objective explicit?" (-1.0 if No, -0.5 if Vague). * "Chemical Equation present?" (-1.0 if No). * "Background thoroughly explained?" (-1.0 if No, -0.5 if Brief or not connected to objective). NOTE: Do not penalize citation context or unit consistency.]
+* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Objective explicit?" (-1.0 if No, -0.5 if Vague). * "Chemical Equation present?" (-1.0 if No). * "Background sufficient for unfamiliar audience?" (-2.0 if generic, -3.0 if missing/irrelevant). Ensure theory explains the chemistry clearly to an outsider.]
 
 **3. HYPOTHESIS: [Score]/10**
 * **✅ Strengths:** [Quote prediction and praise the scientific reasoning]
@@ -346,7 +351,7 @@ STUDENT: [Filename]
 
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [Summarize the calculation process. If Graph is perfect, mention that the scatterplot, equation, and labels are all correct here.]
-* **⚠️ Improvements:** [**GRAPH AUDIT:** "Trendline Equation: [Present/Missing]" (-1.0 if missing). "R² Value: [Present/Missing]" (-1.0 if missing).
+* **⚠️ Improvements:** [**GRAPH AUDIT:** "Trendline: [Present/Missing]" (-1.0). "Equation: [Present/Missing]" (-1.0). "R² Value: [Present/Missing]" (-1.0). Check **ALL** relevant scatter plots. If even one is missing these elements, deduct.
 **CALCULATION AUDIT:** "Example calculations were [Clear/Unclear]." (If unclear, -1.0 pts). "Calculation steps were [Clearly Explained/Not Labeled or Explained]." (If not labeled/explained, -0.5 pts).]
 
 **8. CONCLUSION (10 pts) [STRICT DEDUCTIONS]:
@@ -506,9 +511,12 @@ def process_uploaded_files(uploaded_files):
     return final_files, file_counts
 
 def clean_hidden_math(text):
-    """Removes the <<<MATH: ... >>> blocks from the AI output."""
-    clean_text = re.sub(r'<<<MATH:.*?>>>', '', text, flags=re.DOTALL)
-    return clean_text.strip()
+    """Removes the <math_scratchpad> and <<<MATH: ... >>> blocks from the AI output."""
+    # Remove XML style scratchpad
+    text = re.sub(r'<math_scratchpad>.*?</math_scratchpad>', '', text, flags=re.DOTALL)
+    # Remove old style blocks just in case
+    text = re.sub(r'<<<MATH:.*?>>>', '', text, flags=re.DOTALL)
+    return text.strip()
 
 def recalculate_total_score(text):
     """
