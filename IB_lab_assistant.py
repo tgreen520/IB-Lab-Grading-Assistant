@@ -26,7 +26,7 @@ else:
     st.info("On Streamlit Cloud, add your key to the 'Secrets' settings.")
     st.stop()
 
-# --- 3. HARDCODED RUBRIC (UPDATED FOR MAXIMUM STRICTNESS) ---
+# --- 3. HARDCODED RUBRIC (UPDATED FOR EXCEPTIONS) ---
 IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 
 1. FORMATTING (10 pts):
@@ -41,6 +41,9 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 2. INTRODUCTION (10 pts):
 - Criteria: Clear objective, background theory, balanced equations.
 - OBJECTIVE: Must be explicit. If missing, -1.0 pt.
+- CHEMICAL EQUATION:
+  * Required if a chemical reaction takes place.
+  * **EXCEPTION:** If the lab is physical (e.g. Paper Chromatography, Density) where no reaction occurs, do NOT deduct for missing equations.
 - THEORY (ALL OR NOTHING DEPTH): 
   * **Requirement:** Must explain **ALL** relevant chemical theory related to the lab objective.
   * **The "Chemist Test":** The background must provide sufficient detail for a chemist who is **unfamiliar with this specific experiment** to understand *exactly* why the reaction works.
@@ -99,11 +102,14 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * **Method Error:** Using wrong propagation method (e.g. adding % for addition): **-1.0 pt.**
   * **Missing Sample Calculation:** No example shown: **-2.0 pts.**
   * **Sig Fig Inflation:** Final value has more sig figs than raw data: **-0.5 pts.**
-- SCATTER PLOTS (ALL GRAPHS MUST COMPLY):
+- SCATTER PLOTS (Standard Rule):
   * **Trendline Equation:** Missing on **ANY** relevant graph? -> -1.0 pt.
   * **R² Value:** Missing on **ANY** relevant graph? -> -1.0 pt.
   * **Trendline:** Missing on **ANY** relevant graph? -> -1.0 pt.
   * **Axis Labels:** Missing on **ANY** relevant graph? -> -1.0 pt.
+- **PAPER CHROMATOGRAPHY EXCEPTION:**
+  * If the lab is Paper Chromatography, **Bar Charts** are acceptable.
+  * For these Bar Charts: Trendlines, Equations, and R² values are **NOT REQUIRED**. Do not deduct points for them.
 - SPECTROPHOTOMETRY SPECIFIC RULE:
   * If the lab uses a Spectrophotometer/Colorimeter, an **ABSORBANCE SPECTRUM GRAPH** (Absorbance vs. Wavelength) is **REQUIRED** to justify lambda max.
   * **DEDUCTION:** If Spectrophotometry lab AND Absorbance Spectrum Graph is missing -> **-1.0 pt.**
@@ -121,6 +127,7 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
 - STATISTICAL ANALYSIS:
   * Must use BOTH R and R².
   * Missing R value: -1.0. Missing R² analysis: -1.0.
+  * **EXCEPTION:** If Paper Chromatography (Bar Chart used), R/R² analysis is NOT required.
 - LITERATURE COMPARISON:
   * Must compare results to published literature/accepted values.
   * If missing: -1.0 pt.
@@ -145,10 +152,10 @@ IB_RUBRIC = """TOTAL: 100 POINTS (10 pts per section)
   * Only 1 relevant source provided: Deduct 5.0 pts.
   * Only 2 relevant sources provided: Deduct 3.0 pts.
   * 3+ relevant sources provided: 0 deduction (Full points if formatted correctly).
-  * Minor APA formatting errors: Deduct 1.0 pt.
+  * **Minor APA formatting errors: Deduct 0.5 pt.**
 """
 
-# --- 4. SYSTEM PROMPT (UPGRADED FOR FULL STRICTNESS) ---
+# --- 4. SYSTEM PROMPT (UPGRADED FOR FULL STRICTNESS & EXCEPTIONS) ---
 SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner. 
 **DO NOT GIVE THE BENEFIT OF THE DOUBT.** If a criteria is weak, missing, or vague, YOU MUST DEDUCT POINTS according to the rubric.
 
@@ -159,13 +166,17 @@ SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner.
 
 2.  **INTRODUCTION:** * **Check:** Does the background explain **ALL** relevant chemical theory related to the objective?
     * **Penalty:** If the theory is incomplete (e.g., defines one concept but misses the linking mechanism), **DEDUCT 2.0 POINTS.**
-    * **Standard:** "Could a chemist unfamiliar with this lab understand the *entire* chemical justification?"
+    * **Chemical Equation Check:** If a chemical reaction occurs, the equation is MANDATORY. 
+    * **EXCEPTION:** If the lab is purely physical (e.g., Paper Chromatography, Density, Phase Changes), **DO NOT DEDUCT** for a missing chemical equation.
 
 3.  **HYPOTHESIS:**
     * **Check:** Does the justification FULLY explain the relationship using chemical principles?
     * **Penalty:** If the justification is present but shallow (e.g., "rate increases with concentration" without explaining collision frequency), **DEDUCT 1.5 POINTS.**
 
 4.  **DATA ANALYSIS (Section 7):**
+    * **Paper Chromatography Exception:** Check if the lab is about Chromatography.
+        * **YES:** Bar Charts are accepted. Do **NOT** look for Trendline Equations, Trendlines, or R² values on these bar charts. Do **NOT** deduct for them.
+        * **NO:** Standard Scatter Plot rules apply (Trendline, Equation, R² required or -1.0 each).
     * **Spectrophotometry Trap:** Does the text mention "absorbance", "colorimeter", "spectrophotometer", or "Beer's Law"? 
         * **YES:** Check for a graph of **Absorbance vs Wavelength** (Spectrum).
         * **RESULT:** If this specific graph is missing -> **DEDUCT 1.0 POINT.** (This is required to justify lambda max).
@@ -203,7 +214,7 @@ SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner.
 1.  **INTRODUCTION (Section 2) - DEDUCTION PROTOCOL:**
     * **Start at 10.0 Points.**
     * **Objective:** If Missing -> -1.0. If Vague/Implicit -> -0.5.
-    * **Chemical Equation:** If Missing -> -1.0.
+    * **Chemical Equation:** If Missing -> -1.0 (UNLESS Physical Lab/Chromatography).
     * **Background Theory (STRICT):** * **Incomplete/Generic:** (Explains some but not all relevant concepts, or fails to link to objective): **-2.0 pts.**
         * **Missing/Irrelevant:** **-3.0 pts.**
 
@@ -217,6 +228,7 @@ SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner.
     * **Statistics (R vs R² CHECK):**
         * **R (Correlation):** Must explain Strength AND Direction. (Missing/No explanation -> -1.0. Vague explanation -> -0.5).
         * **R² (Determination):** Must explain % variation/fit. (Missing entirely -> -1.0. Vague explanation -> -0.5).
+        * **EXCEPTION:** If Paper Chromatography (Bar Chart used), do NOT deduct for missing R/R².
 
 3.  **HYPOTHESIS (Section 3):**
     * **Justification Check:** * Missing? -> -2.0. 
@@ -234,10 +246,9 @@ SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner.
     * **Sample Calculations:** NOT SHOWN? -> **-2.0.**
     * **Uncertainty Propagation:** Wrong method used (e.g. adding % for addition)? -> **-1.0.**
     * **Sig Figs:** Final result has more sig figs than raw data? -> **-0.5.**
-    * **Graphs (ALL SCATTER PLOTS):**
-        * Trendline Equation Missing on **ANY** graph? -> -1.0.
-        * R² Value Missing on **ANY** graph? -> -1.0.
-        * Trendline Missing on **ANY** graph? -> -1.0.
+    * **Graphs:**
+        * **Chromatography Exception:** If Bar Chart -> OK. No equations/R² needed.
+        * **Scatter Plots:** Trendline Equation Missing on **ANY** graph? -> -1.0. R² Value Missing on **ANY** graph? -> -1.0. Trendline Missing on **ANY** graph? -> -1.0.
     * **Spectrophotometry Check:** If applicable, is Absorbance Spectrum (Abs vs Wavelength) missing? -> **-1.0.**
 
 6.  **EVALUATION (Section 9) - IMPACT AUDIT:** * **CRITICAL IMPACT AUDIT (THE "DIRECTION" CHECK):**
@@ -252,7 +263,7 @@ SYSTEM_PROMPT = """You are a STRICT IB Chemistry Examiner.
 
 7.  REFERENCES (Section 10):
     * **Quantity:** 0 Sources -> 0pts. 1 Source -> 5pts. 2 Sources -> 7pts. 3+ -> 10pts.
-    * **Formatting:** Minor errors -> -1.0.
+    * **Formatting:** Minor errors -> **-0.5.**
 
 ### OUTPUT FORMAT:
 Please strictly use the following format. Do not use horizontal rules (---) between sections. Do NOT print the calculation steps here.
@@ -272,7 +283,7 @@ STUDENT: [Filename]
 
 **2. INTRODUCTION: [Score]/10**
 * **✅ Strengths:** [Detailed explanation of objective/theory coverage]
-* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Objective explicit?" (-1.0 if No, -0.5 if Vague). * "Chemical Equation present?" (-1.0 if No). * "Background theory depth?" (-2.0 if incomplete/generic, -3.0 if missing/irrelevant). Ensure ALL relevant concepts are explained and linked.]
+* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Objective explicit?" (-1.0 if No, -0.5 if Vague). * "Chemical Equation present?" (-1.0 if No AND reaction occurs). * "Background theory depth?" (-2.0 if incomplete/generic, -3.0 if missing/irrelevant). Ensure ALL relevant concepts are explained and linked.]
 
 **3. HYPOTHESIS: [Score]/10**
 * **✅ Strengths:** [Quote prediction and praise the scientific reasoning]
@@ -295,13 +306,13 @@ STUDENT: [Filename]
 
 **7. DATA ANALYSIS: [Score]/10**
 * **✅ Strengths:** [Summarize the calculation process. If Graph is perfect, mention that the scatterplot, equation, and labels are all correct here.]
-* **⚠️ Improvements:** [**GRAPH AUDIT:** "Trendline: [Present/Missing]" (-1.0). "Equation: [Present/Missing]" (-1.0). "R² Value: [Present/Missing]" (-1.0). Check **ALL** relevant scatter plots.
+* **⚠️ Improvements:** [**GRAPH AUDIT:** "Trendline: [Present/Missing]" (-1.0). "Equation: [Present/Missing]" (-1.0). "R² Value: [Present/Missing]" (-1.0). Check **ALL** relevant scatter plots. (NOTE: Ignore these checks if Paper Chromatography + Bar Chart used).
 **SPECTROPHOTOMETRY CHECK:** "Absorbance Spectrum (Abs vs Wavelength) Graph?" (-1.0 if missing).
 **CALCULATION AUDIT:** "Sample Calculation: [Present/Missing]" (-2.0 if missing). "Uncertainty Propagation Logic: [Correct/Incorrect]" (-1.0 if wrong method used). "Sig Fig Consistency:" (-0.5 if inflated).]
 
 **8. CONCLUSION: [Score]/10**
 * **✅ Strengths:** [Quote data used to support the claim]
-* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Specific Quantitative Data Quoted?" (-2.0 if missing). * "Literature Comparison & % Error?" (-1.0 if missing). * "Statistics R/R²?" (-1.0 if missing, -0.5 if vague/confused). * "Hypothesis Support?" (-1.0 if missing).]
+* **⚠️ Improvements:** [**CRITICAL CHECKS:** * "Specific Quantitative Data Quoted?" (-2.0 if missing). * "Literature Comparison & % Error?" (-1.0 if missing). * "Statistics R/R²?" (-1.0 if missing, -0.5 if vague/confused) (Exception: Chromatography). * "Hypothesis Support?" (-1.0 if missing).]
 
 **9. EVALUATION: [Score]/10**
 * **✅ Strengths:** [**LIST:** "You identified: [Error 1], [Error 2]..." and comment on depth.]
@@ -622,11 +633,14 @@ def grade_submission(file, model_id):
         "2. **DATA ANALYSIS:** \n"
         "   - **Attempt Rule:** If they attempted ANY uncertainty math (even if wrong) -> Deduct 1.0. Only deduct 2.0 if completely missing.\n"
         "   - **Derived Independent Variables:** If they list 'Temp' and '1/Temp' as two IVs, this is CORRECT. Do not deduct.\n"
+        "   - **Chromatography Exception:** If the lab is Paper Chromatography, accept Bar Charts. Do NOT deduct for missing Trendlines, Equations, or R² values.\n"
         "3. **VARIABLES:** \n"
         "   - **Categorization Error:** If they list specific instances (e.g. Zinc, Mg) instead of a category (Type of Metal) -> Deduct 1.0 (Categorization), NOT 4.0 (Missing Controls).\n"
-        "   - **Derived Independent Variables:** Do NOT deduct points if the student lists multiple Independent Variables where the extra ones are mathematically derived from the main IV (e.g., 'Temperature' and '1/Temperature', or 'Concentration' and 'Natural Log of Concentration'). Treat this as a single, valid IV setup.\n"
-        "   - **Derived Dependent Variables:** Do NOT deduct points if the student lists multiple Dependent Variables where the extra ones are mathematically derived from the main IV (e.g., 'Temperature' and '1/Temperature', or 'Concentration' and 'Natural Log of Concentration'). Treat this as a single, valid IV setup.\n"
-        "   - **Misidentified IVs (Categorization Error):** If a student lists specific instances (e.g., 'Mass of Magnesium', 'Mass of Zinc') as multiple Independent Variables instead of the general category (e.g., 'Type of Metal'), deduct **ONLY 1.0 point** for 'Improper Variable Classification'. Do **NOT** deduct 4.0 points. Do **NOT** treat this as 'Missing Control Variables'.\n"
+        "   - **Derived Independent Variables:** Do NOT deduct points if the student lists multiple Independent Variables where the extra ones are mathematically derived from the main IV.\n"
+        "4. **REFERENCES:** \n"
+        "   - Only deduct **0.5 points** for minor APA formatting errors.\n"
+        "5. **INTRODUCTION (No Reaction):** \n"
+        "   - If the lab is purely physical (e.g. Chromatography, Density), do NOT deduct for a missing chemical equation.\n"
     )
 
     if ext == 'docx':
